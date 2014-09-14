@@ -187,3 +187,5 @@ module LibCZMQ
     RUBY
   end
 end
+
+require_relative 'zsys'
