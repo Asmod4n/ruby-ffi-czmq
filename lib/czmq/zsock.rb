@@ -56,11 +56,11 @@ module CZMQ
       RUBY
     end
 
-    def self.new_sub(endpoints, subscribe = nil)
-      sock = new(:sub, endpoints, subscribe)
+    def self.new_sub(endpoints, *subscriptions)
+      sock = new(:sub, endpoints, *subscriptions)
       sock.attach(endpoints, false)
-      if subscribe
-        sock.set_subscribe(subscribe)
+      subscriptions.each do |subscription|
+        sock.set_subscribe(subscription)
       end
       sock
     end

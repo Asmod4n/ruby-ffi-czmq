@@ -42,6 +42,8 @@ end
 
 logger = LogActor.new
 
-CZMQ::Zsys.info('hallo')
+CZMQ::Zsys.info('info')
+CZMQ::Zsys.error('error')
+CZMQ::Zsys.debug('debug')
 
-logger.destructor
+sleep 0.2
