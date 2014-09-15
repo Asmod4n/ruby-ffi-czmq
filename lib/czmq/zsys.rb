@@ -13,6 +13,7 @@ module CZMQ
     attach_variable :zsys_interrupted, :zsys_interrupted, :int
     attach_variable :zctx_interrupted, :zctx_interrupted, :int
 
+    ENV['ZSYS_IPV6'] = '1'
     ENV['ZSYS_SIGHANDLER'] = 'false'
 
     at_exit do

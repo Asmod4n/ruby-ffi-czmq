@@ -31,6 +31,7 @@ class Worker
 
     case msg.first.to_str
     when '$TERM'
+      zsock.signal(0)
       -1
     end
   end
@@ -50,7 +51,7 @@ proxy << 'VERBOSE'
 
 proxy.tell('BACKEND', 'DEALER', 'inproc://backend')
 proxy.wait
-proxy.tell('FRONTEND', 'ROUTER', 'tcp://0.0.0.0:7000')
+proxy.tell('FRONTEND', 'ROUTER', 'tcp://*:7000')
 proxy.wait
 
 workers = []
