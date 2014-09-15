@@ -36,7 +36,7 @@ module CZMQ
 
     def each
       yield first
-      ((size) -1).times do
+      size.pred.times do
         yield self.next
       end
     end
