@@ -68,7 +68,7 @@ module CZMQ
     def tell(*msgs)
       zmsg = Zmsg.new
       msgs.each {|msg| zmsg << msg}
-      zmsg.send_zmsg(@czmq_obj)
+      forward(zmsg)
     end
 
     alias_method :<<, :tell

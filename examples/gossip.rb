@@ -40,20 +40,15 @@ end
 
 base = BaseConfig.new('tcp://*:7001')
 
-node1 = CZMQ::Zactor.new_zgossip('node1')
-node1.tell('BIND', 'tcp://*:*')
-node1.tell('CONNECT', 'tcp://localhost:7001')
+nodes = []
 
-node1 << 'PORT'
-port1 = node1.recv.last.to_str
-node1.tell('PUBLISH', 'service1', "tcp://localhost:#{port1}")
-
-node2 = CZMQ::Zactor.new_zgossip('node2')
-node2.tell('BIND', 'tcp://*:*')
-node2.tell('CONNECT', 'tcp://localhost:7001')
-
-node2 << 'PORT'
-port2 = node2.recv.last.to_str
-node2.tell('PUBLISH', 'service2', "tcp://localhost:#{port2}")
+4.times do |i|
+  nodes << node = CZMQ::Zactor.new_zgossip("node#{i}")
+  node.tell('BIND', 'tcp://*:*')
+  node.tell('CONNECT', 'tcp://localhost:7001')
+  node << 'PORT'
+  port = node.recv.last.to_str
+  node.tell('PUBLISH', "service#{i}", "tcp://localhost:#{port}")
+end
 
 sleep 1

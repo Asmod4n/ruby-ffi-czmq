@@ -23,9 +23,7 @@ module CZMQ
         actor.call(child_pipe)
       end
 
-      zactor = new(zactor_fn, nil)
-      at_exit { zactor.destructor }
-      zactor
+      new(zactor_fn, nil)
     end
 
     [:zauth, :zbeacon, :zproxy].each do |meth|
@@ -35,9 +33,7 @@ module CZMQ
           #{meth.to_s}(zsock_t, args)
         end
 
-        zactor = new(zactor_fn, nil)
-        at_exit { zactor.destructor }
-        zactor
+        new(zactor_fn, nil)
       end
       RUBY
     end
@@ -47,19 +43,15 @@ module CZMQ
         zmonitor(zsock_t, args)
       end
 
-      zactor = new(zactor_fn, Zsock.convert(sock))
-      at_exit { zactor.destructor }
-      zactor
+      new(zactor_fn, Zsock.convert(sock))
     end
 
     def self.new_zgossip(logprefix)
-      zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], :blocking => true) do |zsock_t, args|
+      zactor_fn = FFI::Function.new(:void, [:pointer, :string], :blocking => true) do |zsock_t, args|
         zgossip(zsock_t, args)
       end
 
-      zactor = new(zactor_fn, logprefix)
-      at_exit { zactor.destructor }
-      zactor
+      new(zactor_fn, logprefix)
     end
 
     def tell(*msgs)

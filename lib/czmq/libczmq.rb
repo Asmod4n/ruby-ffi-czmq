@@ -113,6 +113,7 @@ module LibCZMQ
     private
 
     def setup_finalizer
+      at_exit { destructor }
       ObjectSpace.define_finalizer(self, self.class.close_instance(self))
     end
 
