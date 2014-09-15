@@ -138,11 +138,6 @@ module LibCZMQ
     attach_function #{name.inspect}, #{fn.inspect}, #{arguments.inspect}, #{returns.inspect}, :blocking => true
 
     def #{name}(*args)
-      if instance_variables.include?(:@czmq_obj) && @czmq_obj.nil?
-
-        fail "#{czmq_class} is not initialized"
-      end
-
       if CZMQ::Utils.check_for_pointer(@czmq_obj)
 
         case #{function.inspect}
@@ -154,7 +149,9 @@ module LibCZMQ
           zsock = CZMQ::Zsock.convert(args.first)
           result = self.class.#{name}(pointer, zsock, *args[1..-1])
 
-          z_obj.instance_variable_set(:@owned_by_ruby, nil)
+          unless(#{czmq_class == :zframe} && args.last & CZMQ::Zframe::REUSE > 0)
+            z_obj.instance_variable_set(:@owned_by_ruby, nil)
+          end
         when :insert, :append, :prepend
           if args.first.instance_variable_get(:@owned_by_ruby)
             z_obj = args.first
@@ -164,7 +161,7 @@ module LibCZMQ
 
           czmq_obj = FFI::MemoryPointer.new(:pointer)
           czmq_obj.write_pointer(z_obj.to_czmq)
-          self.class.#{name}(@czmq_obj, czmq_obj)
+          result = self.class.#{name}(@czmq_obj, czmq_obj)
 
           z_obj.instance_variable_set(:@owned_by_ruby, nil)
         else
@@ -172,7 +169,7 @@ module LibCZMQ
         end
 
       else
-        result = self.class.#{name}(*args)
+        fail "#{czmq_class} is not initialized"
       end
 
       case #{returns.inspect}
@@ -192,4 +189,4 @@ module LibCZMQ
 end
 
 require_relative 'zsys'
-
+require_relative 'zframe'
