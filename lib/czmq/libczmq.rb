@@ -113,7 +113,9 @@ module LibCZMQ
     private
 
     def setup_finalizer
-      at_exit { destructor }
+      if @owned_by_ruby
+        at_exit { destructor }
+      end
       ObjectSpace.define_finalizer(self, self.class.close_instance(self))
     end
 
@@ -190,3 +192,4 @@ module LibCZMQ
 end
 
 require_relative 'zsys'
+
