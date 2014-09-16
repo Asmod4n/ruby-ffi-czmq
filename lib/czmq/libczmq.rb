@@ -144,10 +144,10 @@ module LibCZMQ
         when :send
           z_obj = @owned_by_ruby ? self : dup
 
-          pointer = FFI::MemoryPointer.new(:pointer)
-          pointer.write_pointer(z_obj.to_czmq)
+          czmq_obj = FFI::MemoryPointer.new(:pointer)
+          czmq_obj.write_pointer(z_obj.to_czmq)
           zsock = CZMQ::Zsock.convert(args.first)
-          result = self.class.#{name}(pointer, zsock, *args[1..-1])
+          result = self.class.#{name}(czmq_obj, zsock, *args[1..-1])
 
           unless(#{czmq_class == :zframe} && args.last & CZMQ::Zframe::REUSE > 0)
             z_obj.instance_variable_set(:@owned_by_ruby, nil)
@@ -164,6 +164,10 @@ module LibCZMQ
           result = self.class.#{name}(@czmq_obj, czmq_obj)
 
           z_obj.instance_variable_set(:@owned_by_ruby, nil)
+        when :reload
+          czmq_obj = FFI::MemoryPointer.new(:pointer)
+          czmq_obj.write_pointer(@czmq_obj)
+          result = self.class.#{name}(czmq_obj)
         else
           result = self.class.#{name}(@czmq_obj, *args)
         end

@@ -28,7 +28,7 @@ if CZMQ::Utils.has_curve
 
           return cert.to_zcert
         else
-          fail ArgumentError, "#{cert.class} is not a #{self.class}"
+          fail ArgumentError, "#{cert.class} is not a CZMQ::Zcert"
         end
       end
 
