@@ -11,7 +11,6 @@ module CZMQ
     attach_function :zsys_version,  :zsys_version,    [:buffer_in, :buffer_in, :buffer_in], :void,    :blocking => true
     attach_function :errno,         :zmq_errno,       [],                                   :int,     :blocking => true
     attach_function :strerror,      :zmq_strerror,    [:int],                               :string,  :blocking => true
-    attach_function :has_curve,     :zsys_has_curve,  [],                                   :bool,    :blocking => true
 
     class << self
       def version
@@ -55,6 +54,8 @@ module CZMQ
 
     if version[:czmq][:major] < 3
       fail LoadError, 'This needs at least czmq 3'
+    else
+      attach_function :has_curve, :zsys_has_curve,  [], :bool,  :blocking => true
     end
   end
 end
