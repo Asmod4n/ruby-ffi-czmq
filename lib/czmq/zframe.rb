@@ -20,9 +20,6 @@ module CZMQ
     czmq_function :size,              :size,      [:pointer],                     :size_t
     czmq_function :data,              :data,      [:pointer],                     :pointer
     czmq_function :dup_zframe,        :dup,       [:pointer],                     :pointer
-    czmq_function :str_hex,           :strhex,    [:pointer],                     :string
-    czmq_function :str_eq,            :streq,     [:pointer, :string],            :bool
-    czmq_function :str_dup,           :strdup,    [:pointer],                     :string
     czmq_function :more,              :more,      [:pointer],                     :int
     czmq_function :set_more,          :set_more,  [:pointer, :int],               :void
     czmq_function :eq,                :eq,        [:pointer, :pointer],           :bool
