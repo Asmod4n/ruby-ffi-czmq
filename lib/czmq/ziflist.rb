@@ -27,9 +27,9 @@ module CZMQ
       hsh = {}
       each do |interface|
         hsh[interface] = {
-          :address =>   address,
-          :broadcast => broadcast,
-          :netmask =>   netmask
+          address:   address,
+          broadcast: broadcast,
+          netmask:   netmask
         }
       end
       hsh

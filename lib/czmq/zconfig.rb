@@ -42,7 +42,7 @@ module CZMQ
     end
 
     def execute(&block)
-      zconfig_fct = FFI::Function.new(:int, [:pointer, :pointer, :int]) do |zconfig_t, args, level|
+      zconfig_fct = FFI::Function.new(:int, [:pointer, :pointer, :int], blocking: true) do |zconfig_t, args, level|
         zconfig = self.class.new_from_czmq_obj(zconfig_t, nil)
         block.call(zconfig, level)
       end

@@ -16,11 +16,11 @@ module LibCZMQ
   def czmq_constructor(constructor_params = [])
     module_eval <<-RUBY, __FILE__, __LINE__
     if #{czmq_class == :zsock}
-      attach_function :constructor, "#{czmq_class}_new_", [:int, :string, :size_t], :pointer, :blocking => true
+      attach_function :constructor, "#{czmq_class}_new_", [:int, :string, :size_t], :pointer, blocking: true
     else
-      attach_function :constructor, "#{czmq_class}_new",  #{constructor_params.inspect},  :pointer, :blocking => true
+      attach_function :constructor, "#{czmq_class}_new",  #{constructor_params.inspect},  :pointer, blocking: true
     end
-    attach_function :test,  "#{czmq_class}_test", [:bool],  :void,  :blocking => true
+    attach_function :test,  "#{czmq_class}_test", [:bool],  :void,  blocking: true
 
     def self.new_from_czmq_obj(czmq_obj, owned_by_ruby = true)
       if CZMQ::Utils.check_for_pointer(czmq_obj)
@@ -82,9 +82,9 @@ module LibCZMQ
   def czmq_destructor
     module_eval <<-RUBY, __FILE__, __LINE__
     if #{czmq_class == :zsock}
-      attach_function :destructor,  :zsock_destroy_,  [:pointer, :string, :size_t], :void,  :blocking => true
+      attach_function :destructor,  :zsock_destroy_,  [:pointer, :string, :size_t], :void,  blocking: true
     else
-      attach_function :destructor,  "#{czmq_class}_destroy",  [:pointer], :void,  :blocking => true
+      attach_function :destructor,  "#{czmq_class}_destroy",  [:pointer], :void,  blocking: true
     end
 
     def destructor
@@ -135,7 +135,7 @@ module LibCZMQ
     fn = "#{czmq_class}_#{function}"
 
     module_eval <<-RUBY, __FILE__, __LINE__
-    attach_function #{name.inspect}, #{fn.inspect}, #{arguments.inspect}, #{returns.inspect}, :blocking => true
+    attach_function #{name.inspect}, #{fn.inspect}, #{arguments.inspect}, #{returns.inspect}, blocking: true
 
     def #{name}(*args)
       if CZMQ::Utils.check_for_pointer(@czmq_obj)

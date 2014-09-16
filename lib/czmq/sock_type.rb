@@ -86,13 +86,6 @@ module CZMQ
       # @return [Fixnum]
       attr_reader :code
 
-      if RUBY_VERSION < '1.9.0'
-        # @param [#to_i] code
-        def initialize(code)
-          super __setobj__ code
-        end
-      end
-
       # SockType message
       #
       # @return [nil] unless code is well-known (see TYPE)

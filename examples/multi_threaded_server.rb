@@ -14,11 +14,11 @@ class Worker
   private
 
   def run(child_pipe)
-    @worker = CZMQ::Zsock.new_dealer('inproc://backend')
-
     @reactor = CZMQ::Zloop.new
     @reactor.set_verbose(true)
     @reactor.add_reader(child_pipe, &method(:handle_pipe))
+
+    @worker = CZMQ::Zsock.new_dealer('inproc://backend')
     @reactor.add_reader(@worker, &method(:handle_worker))
 
     child_pipe.signal(0)
@@ -58,16 +58,10 @@ workers = []
 4.times {|i| workers << Worker.new("worker#{i}") }
 
 trap('INT') do
-  workers.each do |worker|
-    worker.destructor
-  end
   exit
 end
 
 trap('TERM') do
-  workers.each do |worker|
-    worker.destructor
-  end
   exit
 end
 

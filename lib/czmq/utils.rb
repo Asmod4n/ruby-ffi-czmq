@@ -7,10 +7,10 @@ module CZMQ
 
     ffi_lib 'czmq', 'libzmq'
 
-    attach_function :zmq_version,   :zmq_version,     [:buffer_in, :buffer_in, :buffer_in], :void,    :blocking => true
-    attach_function :zsys_version,  :zsys_version,    [:buffer_in, :buffer_in, :buffer_in], :void,    :blocking => true
-    attach_function :errno,         :zmq_errno,       [],                                   :int,     :blocking => true
-    attach_function :strerror,      :zmq_strerror,    [:int],                               :string,  :blocking => true
+    attach_function :zmq_version,   :zmq_version,     [:buffer_in, :buffer_in, :buffer_in], :void,    blocking: true
+    attach_function :zsys_version,  :zsys_version,    [:buffer_in, :buffer_in, :buffer_in], :void,    blocking: true
+    attach_function :errno,         :zmq_errno,       [],                                   :int,     blocking: true
+    attach_function :strerror,      :zmq_strerror,    [:int],                               :string,  blocking: true
 
     class << self
       def version
@@ -27,8 +27,8 @@ module CZMQ
           zsys_version c_major, c_minor, c_patch
 
           @version = {
-             :zmq => {:major => z_major.read_int, :minor => z_minor.read_int, :patch => z_patch.read_int},
-            :czmq => {:major => c_major.read_int, :minor => c_minor.read_int, :patch => c_patch.read_int}
+             zmq: {major: z_major.read_int, minor: z_minor.read_int, patch: z_patch.read_int},
+            czmq: {major: c_major.read_int, minor: c_minor.read_int, patch: c_patch.read_int}
           }
         end
 
@@ -55,7 +55,7 @@ module CZMQ
     if version[:czmq][:major] < 3
       fail LoadError, 'This needs at least czmq 3'
     else
-      attach_function :has_curve, :zsys_has_curve,  [], :bool,  :blocking => true
+      attach_function :has_curve, :zsys_has_curve,  [], :bool,  blocking: true
     end
   end
 end
