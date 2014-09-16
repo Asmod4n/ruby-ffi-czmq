@@ -25,7 +25,6 @@ module CZMQ
     czmq_function :add_zstr,          :addstr,        [:pointer, :string],            :int
     czmq_function :push_zstrf,        :pushstrf,      [:pointer, :string, :varargs],  :int
     czmq_function :add_zstrf,         :addstrf,       [:pointer, :string, :varargs],  :int
-    czmq_function :pop_zstr,          :popstr,        [:pointer],                     :string
     czmq_function :remove_zframe,     :remove,        [:pointer, :pointer],           :void
     czmq_function :first_zframe,      :first,         [:pointer],                     :pointer
     czmq_function :next_zframe,       :next,          [:pointer],                     :pointer
@@ -146,9 +145,7 @@ module CZMQ
     end
 
     def self.decode(bytes)
-      if bytes.respond_to?(:bytesize)
-        new_from_czmq_obj(decode_zmsg(bytes, bytes.bytesize))
-      end
+      new_from_czmq_obj(decode_zmsg(bytes, bytes.bytesize))
     end
 
     private
