@@ -12,8 +12,8 @@ module CZMQ
     czmq_function :put,               :put,         [:pointer, :string, :string],   :void
     czmq_function :set_name,          :set_name,    [:pointer, :string],            :void
     czmq_function :set_value,         :set_value,   [:pointer, :string],            :void
-    czmq_function :child,             :child,       [:pointer],                     :pointer
-    czmq_function :next,              :next,        [:pointer],                     :pointer
+    czmq_function :child_zconfig,     :child,       [:pointer],                     :pointer
+    czmq_function :next_zconfig,      :next,        [:pointer],                     :pointer
     czmq_function :locate_zconfig,    :locate,      [:pointer, :string],            :pointer
     czmq_function :resolve,           :resolve,     [:pointer, :string, :string],   :string
     czmq_function :zconfig_at_depth,  :at_depth,    [:pointer, :int],               :pointer
@@ -31,6 +31,14 @@ module CZMQ
       else
         fail IOError, Utils.error
       end
+    end
+
+    def child
+      self.class.new_from_czmq_obj(child_zconfig, nil)
+    end
+
+    def next
+      self.class.new_from_czmq_obj(next_zconfig, nil)
     end
 
     def execute(&block)

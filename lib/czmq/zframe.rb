@@ -14,17 +14,28 @@ module CZMQ
     czmq_constructor [:pointer, :size_t]
     czmq_destructor
 
-    czmq_function :new_empty,           :new_empty,   [],                         :pointer
-    czmq_function :recv_zframe,         :recv,        [:pointer],                 :pointer
-    czmq_function :send_zframe,         :send,        [:pointer, :pointer, :int], :int
-    czmq_function :size,                :size,        [:pointer],                 :size_t
-    czmq_function :data,                :data,        [:pointer],                 :pointer
-    czmq_function :dup_zframe,          :dup,         [:pointer],                 :pointer
-    czmq_function :str_hex,             :strhex,      [:pointer],                 :string
-    czmq_function :str_eq,              :streq,       [:pointer, :string],        :bool
-    czmq_function :str_dup,             :strdup,      [:pointer],                 :string
-    czmq_function :more,                :more,        [:pointer],                 :int
-    czmq_function :set_more,            :set_more,    [:pointer, :int],           :void
+    czmq_function :new_empty_zframe,  :new_empty, [],                             :pointer
+    czmq_function :recv_zframe,       :recv,      [:pointer],                     :pointer
+    czmq_function :send_zframe,       :send,      [:pointer, :pointer, :int],     :int
+    czmq_function :size,              :size,      [:pointer],                     :size_t
+    czmq_function :data,              :data,      [:pointer],                     :pointer
+    czmq_function :dup_zframe,        :dup,       [:pointer],                     :pointer
+    czmq_function :str_hex,           :strhex,    [:pointer],                     :string
+    czmq_function :str_eq,            :streq,     [:pointer, :string],            :bool
+    czmq_function :str_dup,           :strdup,    [:pointer],                     :string
+    czmq_function :more,              :more,      [:pointer],                     :int
+    czmq_function :set_more,          :set_more,  [:pointer, :int],               :void
+    czmq_function :eq,                :eq,        [:pointer, :pointer],           :bool
+    czmq_function :reset,             :reset,     [:pointer, :pointer, :size_t],  :void
+    czmq_function :print,             :print,     [:pointer, :string],            :void
+
+    def self.new_empty
+      unless (zframe = new_empty_zframe).null?
+        new_from_czmq_obj(zframe)
+      else
+        fail Utils.error
+      end
+    end
 
     def self.convert(frame)
       if Utils.check_for_pointer(frame)
@@ -48,7 +59,7 @@ module CZMQ
     end
 
     def ==(other)
-      to_str == other.to_str
+      (object_id == other.object_id ||eq(self.class.convert(other)))
     end
 
     def !=(other)
@@ -56,7 +67,7 @@ module CZMQ
     end
 
     def to_str
-      Utils.hex2bin(str_hex)
+      data.read_bytes(size)
     end
 
     def self.recv(socket)
