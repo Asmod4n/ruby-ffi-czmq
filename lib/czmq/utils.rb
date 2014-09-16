@@ -5,13 +5,12 @@ module CZMQ
     HEXY = 'H*'.freeze
     extend FFI::Library
 
-    ffi_lib 'czmq', 'libzmq', FFI::Library::LIBC
+    ffi_lib 'czmq', 'libzmq'
 
     attach_function :zmq_version,   :zmq_version,     [:buffer_in, :buffer_in, :buffer_in], :void,    :blocking => true
     attach_function :zsys_version,  :zsys_version,    [:buffer_in, :buffer_in, :buffer_in], :void,    :blocking => true
     attach_function :errno,         :zmq_errno,       [],                                   :int,     :blocking => true
     attach_function :strerror,      :zmq_strerror,    [:int],                               :string,  :blocking => true
-    attach_function :free_libc,     :free,            [:pointer],                           :void,    :blocking => true
 
     class << self
       def version
@@ -42,10 +41,6 @@ module CZMQ
 
       def error
         strerror(errno)
-      end
-
-      def free(ptr)
-        check_for_pointer(ptr) && free_libc(ptr)
       end
 
       def bin2hex(bytes)

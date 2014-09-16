@@ -20,7 +20,6 @@ module CZMQ
     czmq_function :size,              :size,      [:pointer],                     :size_t
     czmq_function :data,              :data,      [:pointer],                     :pointer
     czmq_function :dup_zframe,        :dup,       [:pointer],                     :pointer
-    # You have to free Strings returned by str_hex and str_dup by using CZMQ::Utils.free
     czmq_function :str_hex,           :strhex,    [:pointer],                     :string
     czmq_function :str_eq,            :streq,     [:pointer, :string],            :bool
     czmq_function :str_dup,           :strdup,    [:pointer],                     :string
