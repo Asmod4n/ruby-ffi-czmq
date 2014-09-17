@@ -55,7 +55,6 @@ module LibCZMQ
 
       !czmq_obj.null? ||fail("Cannot allocate #{czmq_class} because of #{CZMQ::Utils.error}")
 
-      instance.instance_variable_set(:@args, args)
       instance.instance_variable_set(:@czmq_obj, czmq_obj)
       instance.instance_variable_set(:@owned_by_ruby, true)
 
