@@ -18,7 +18,12 @@ class Worker
     @reactor.set_verbose(true)
     @reactor.add_reader(child_pipe, &method(:handle_pipe))
 
-    @worker = CZMQ::Zsock.new_dealer('inproc://backend')
+    config = CZMQ::Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
+    endpoint = config.resolve('/proxy/backend/endpoint', nil)
+
+    @worker = CZMQ::Zsock.new(config.resolve('/proxy/backend/type', nil), endpoint)
+    @worker.attach(endpoint, false)
+
     @reactor.add_reader(@worker, &method(:handle_worker))
 
     child_pipe.signal(0)
@@ -40,22 +45,24 @@ class Worker
     msg = zsock.recv
 
     sender = msg.first
-    answer = CZMQ::Zmsg.new
-    answer << sender << nil << @id << 'welcome'
-    zsock.forward(answer)
+    zsock.tell(sender, nil, @id, 'welcome')
   end
 end
 
 proxy = CZMQ::Zactor.new_zproxy
 proxy << 'VERBOSE'
 
-proxy.tell('BACKEND', 'DEALER', 'inproc://backend')
-proxy.wait
-proxy.tell('FRONTEND', 'ROUTER', 'tcp://*:7000')
+config = CZMQ::Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
+
+proxy.tell('BACKEND', config.resolve('/proxy/backend/type', nil), config.resolve('/proxy/backend/endpoint', nil))
 proxy.wait
 
 workers = []
 4.times {|i| workers << Worker.new("worker#{i}") }
+
+proxy.tell('FRONTEND', config.resolve('/proxy/frontend/type', nil), config.resolve('/proxy/frontend/endpoint', nil))
+proxy.wait
+
 
 trap('INT') do
   exit
