@@ -15,7 +15,7 @@ module LibCZMQ
 
   def czmq_constructor(constructor_params = [])
     module_eval <<-RUBY, __FILE__, __LINE__
-    if #{czmq_class == :zsock}
+    if self == CZMQ::Zsock
       attach_function :constructor, "#{czmq_class}_new_", [:int, :string, :size_t], :pointer, blocking: true
     else
       attach_function :constructor, "#{czmq_class}_new",  #{constructor_params.inspect},  :pointer, blocking: true
@@ -44,8 +44,7 @@ module LibCZMQ
 
     def self.new(*args)
       instance = allocate
-
-      if #{czmq_class == :zsock}
+      if self == CZMQ::Zsock
         czmq_obj = instance.class.constructor(CZMQ::Zsock::SockType[args.first], __FILE__, __LINE__)
       elsif #{constructor_params.empty?}
         czmq_obj = instance.class.constructor
@@ -80,7 +79,7 @@ module LibCZMQ
 
   def czmq_destructor
     module_eval <<-RUBY, __FILE__, __LINE__
-    if #{czmq_class == :zsock}
+    if self == CZMQ::Zsock
       attach_function :destructor,  :zsock_destroy_,  [:pointer, :string, :size_t], :void,  blocking: true
     else
       attach_function :destructor,  "#{czmq_class}_destroy",  [:pointer], :void,  blocking: true
@@ -93,7 +92,7 @@ module LibCZMQ
         if CZMQ::Utils.check_for_pointer(@czmq_obj)
           FFI::MemoryPointer.new(:pointer) do |p|
             p.write_pointer(@czmq_obj)
-            if #{czmq_class == :zsock}
+            if self.class == CZMQ::Zsock
               self.class.destructor(p, __FILE__, __LINE__)
             else
               self.class.destructor(p)
@@ -148,7 +147,7 @@ module LibCZMQ
           zsock = CZMQ::Zsock.convert(args.first)
           result = self.class.#{name}(czmq_obj, zsock, *args[1..-1])
 
-          unless(#{czmq_class == :zframe} && args.last & CZMQ::Zframe::REUSE > 0)
+          unless(self.class == CZMQ::Zframe && args.last & CZMQ::Zframe::REUSE > 0)
             z_obj.instance_variable_set(:@owned_by_ruby, nil)
           end
         when :insert, :append, :prepend
@@ -193,3 +192,4 @@ end
 
 require_relative 'zsys'
 require_relative 'zframe'
+require_relative 'zsock'
