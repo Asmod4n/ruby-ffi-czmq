@@ -14,5 +14,5 @@ Gem::Specification.new do |gem|
   gem.version      = CZMQ::VERSION
 
   gem.add_dependency 'ffi', '>= 1.9.3'
-  gem.add_development_dependency 'bundler', '>= 1.5'
+  gem.add_development_dependency 'bundler', '>= 1.4.6'
 end
