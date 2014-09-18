@@ -6,13 +6,13 @@ Gem::Specification.new do |gem|
   gem.description  = 'czmq ffi wrapper'
   gem.summary      = gem.description
   gem.homepage     = 'https://github.com/Asmod4n/ruby-ffi-czmq'
-  gem.license      = 'Apache 2.0'
+  gem.license      = 'Apache-2.0'
 
   gem.name         = 'ffi-czmq'
   gem.files        = Dir['README.md', 'LICENSE', 'lib/**/*']
   gem.require_path = 'lib'
   gem.version      = CZMQ::VERSION
 
-  gem.add_dependency 'ffi', '>= 1.9.3'
-  gem.add_development_dependency 'bundler', '>= 1.4.6'
+  gem.add_dependency 'ffi', '>= 1.0.11'
+  gem.add_development_dependency 'bundler', '>= 1.1.4'
 end
