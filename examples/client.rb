@@ -1,7 +1,8 @@
-﻿require 'bundler/setup'
+require 'bundler/setup'
 require 'ffi-czmq'
 
-client = CZMQ::Zsock.new_dealer('tcp://localhost:7000')
+config = CZMQ::Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
+client = CZMQ::Zsock.new_dealer(config.resolve('/client/endpoint', nil))
 
 4.times do
   client.tell(nil, 'hello')
