@@ -1,4 +1,4 @@
-require 'bundler/setup'
+﻿require 'bundler/setup'
 require 'ffi-czmq'
 
 config = CZMQ::Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
