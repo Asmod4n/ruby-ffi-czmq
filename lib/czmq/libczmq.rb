@@ -179,7 +179,8 @@ module LibCZMQ
         !result.null? ||fail(CZMQ::Utils.error)
         result
       when :int
-        if #{function.inspect} == :send
+        case #{function.inspect}
+        when :send,/^save.*$/
           result != -1 ||fail(IOError, CZMQ::Utils.error)
         else
           result != -1 ||fail(CZMQ::Utils.error)
