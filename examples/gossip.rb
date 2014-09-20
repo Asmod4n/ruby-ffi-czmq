@@ -49,8 +49,8 @@ nodes = []
 
 4.times do |i|
   nodes << node = CZMQ::Zactor.new_zgossip("#{node_prefix}#{i}")
-  node.tell('BIND', node_endpoint)
   node.tell('CONNECT', node_connect)
+  node.tell('BIND', node_endpoint)
   node << 'PORT'
   port = node.recv.last.to_str
   node.tell('PUBLISH', "service#{i}", "tcp://localhost:#{port}")

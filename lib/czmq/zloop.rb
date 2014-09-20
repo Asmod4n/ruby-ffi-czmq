@@ -22,7 +22,7 @@ module CZMQ
     end
 
     def add_reader(zsock, &block)
-      zloop_reader_fn = FFI::Function.new(:int, [:pointer, :pointer, :pointer], blocking: true) do |zloop_t, zsock_t, args|
+      zloop_reader_fn = FFI::Function.new(:int, [:pointer, :pointer, :pointer]) do |zloop_t, zsock_t, args|
         zsocky = Zsock.new_from_czmq_obj(zsock_t, nil)
         block.call(zsocky)
       end
@@ -37,7 +37,7 @@ module CZMQ
     end
 
     def add_timer(delay, times, &block)
-      zloop_timer_fn = FFI::Function.new(:int, [:pointer, :int, :pointer], blocking: true) do |zloop_t, timer_id, args|
+      zloop_timer_fn = FFI::Function.new(:int, [:pointer, :int, :pointer]) do |zloop_t, timer_id, args|
         block.call(timer_id)
       end
 

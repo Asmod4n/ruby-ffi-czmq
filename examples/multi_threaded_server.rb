@@ -63,7 +63,6 @@ workers = []
 proxy.tell('FRONTEND', config.resolve('/proxy/frontend/type', nil), config.resolve('/proxy/frontend/endpoint', nil))
 proxy.wait
 
-
 trap('INT') do
   exit
 end
