@@ -8,4 +8,6 @@ platforms :jruby do
   gem 'msgpack-jruby', :require => 'msgpack'
 end
 
+gem 'websocket-driver'
+
 gemspec
