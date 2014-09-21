@@ -34,7 +34,6 @@ class Client
     @driver.ping(@client_id.inspect) do
       @latency.stop
       puts "#{@client_id.inspect} latency: #{@latency.mean}"
-      interval = nil
     end
   end
 end
