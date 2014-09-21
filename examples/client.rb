@@ -11,5 +11,5 @@ client.attach(connect, false)
 end
 
 4.times do
-  puts client.recv.to_a.inspect
+  client.recv.print
 end

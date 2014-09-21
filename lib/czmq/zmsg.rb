@@ -29,9 +29,10 @@ module CZMQ
     czmq_function :first_zframe,      :first,         [:pointer],                     :pointer
     czmq_function :next_zframe,       :next,          [:pointer],                     :pointer
     czmq_function :last_zframe,       :last,          [:pointer],                     :pointer
-    czmq_function :dup_zmsg,          :dup,           [:pointer],                     :pointer
     czmq_function :encode_zmsg,       :encode,        [:pointer, :buffer_in],         :size_t
     czmq_function :decode_zmsg,       :decode,        [:pointer, :size_t],            :pointer
+    czmq_function :dup_zmsg,          :dup,           [:pointer],                     :pointer
+    czmq_function :print,             :print,         [:pointer],                     :void
 
     def each
       yield first
