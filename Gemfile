@@ -5,9 +5,9 @@ platforms :ruby do
 end
 
 platforms :jruby do
-  gem 'msgpack-jruby', :require => 'msgpack'
+  gem 'msgpack-jruby', require: 'msgpack'
 end
 
-gem 'websocket-driver'
-
+gem 'websocket-driver', github: 'Asmod4n/websocket-driver-ruby', branch: 'patch-1'
+gem 'hitimes'
 gemspec
