@@ -12,12 +12,16 @@ module CZMQ
     czmq_constructor
     czmq_destructor
 
-    czmq_function :attach,    :attach,    [:pointer, :string, :bool], :int
-    czmq_function :endpoint,  :endpoint,  [:pointer],                 :string
-    czmq_function :type_str,  :type_str,  [:pointer],                 :string
-    czmq_function :signal,    :signal,    [:pointer, :uchar],         :int
-    czmq_function :wait,      :wait,      [:pointer],                 :int
-    czmq_function :resolve,   :resolve,   [:pointer],                 :pointer
+    czmq_function :bind,        :bind,      [:pointer, :string],        :int
+    czmq_function :endpoint,    :endpoint,  [:pointer],                 :string
+    czmq_function :unbind,      :unbind,    [:pointer, :string],        :int
+    czmq_function :connect,     :connect,   [:pointer, :string],        :int
+    czmq_function :disconnect,  :disconnect,[:pointer, :string],        :int
+    czmq_function :attach,      :attach,    [:pointer, :string, :bool], :int
+    czmq_function :type_str,    :type_str,  [:pointer],                 :string
+    czmq_function :signal,      :signal,    [:pointer, :uchar],         :int
+    czmq_function :wait,        :wait,      [:pointer],                 :int
+    czmq_function :resolve,     :resolve,   [:pointer],                 :pointer
 
     def self.convert(czmq_obj)
       if Utils.check_for_pointer(czmq_obj)
