@@ -183,7 +183,11 @@ module LibCZMQ
         when :send,/^save.*$/
           result != -1 ||fail(IOError, CZMQ::Utils.error)
         else
-          result != -1 ||fail(CZMQ::Utils.error)
+          if #{czmq_class == :zsock}
+            result != -1 ||fail(IOError, CZMQ::Utils.error)
+          else
+            result != -1 ||fail(CZMQ::Utils.error)
+          end
         end
         result
       else
