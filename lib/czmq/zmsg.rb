@@ -139,7 +139,7 @@ module CZMQ
       buffer = FFI::MemoryPointer.new(:pointer)
       size = encode_zmsg(buffer)
       bPtr = buffer.read_pointer()
-      bPtr.null? ? nil : bPtr.read_bytes(size)
+      bPtr.null? ? fail(Utils.error) : bPtr.read_bytes(size)
     end
 
     def self.decode(bytes)

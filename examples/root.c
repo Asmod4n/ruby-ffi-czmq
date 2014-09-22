@@ -4,11 +4,7 @@ int handle_pipe(zloop_t *loop, zsock_t *root, void *arg) {
   zmsg_t *msg = zmsg_recv (root);
   assert (msg);
 
-  zframe_t *frame = zmsg_first (msg);
-  while (frame) {
-    zframe_print (frame, NULL);
-    frame = zmsg_next (msg);
-  }
+  zmsg_print (msg);
 
   zmsg_destroy (&msg);
   return 0;
