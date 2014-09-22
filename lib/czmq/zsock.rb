@@ -1,4 +1,4 @@
-require_relative 'libczmq'
+﻿require_relative 'libczmq'
 require_relative 'utils'
 require_relative 'sock_type'
 require_relative 'zmsg'

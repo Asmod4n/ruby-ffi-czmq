@@ -56,7 +56,7 @@ module CZMQ
 
     def tell(*msgs)
       zmsg = Zmsg.new
-      msgs.each {|msg| zmsg << msg}
+      msgs.each {|msg| zmsg << msg }
       zmsg.send_zmsg(@czmq_obj)
     end
 
@@ -68,6 +68,10 @@ module CZMQ
 
     def wait
       Zsock.wait(@czmq_obj)
+    end
+
+    def signal(rc = 0)
+      Zsock.signal(@czmq_obj, rc)
     end
   end
 end
