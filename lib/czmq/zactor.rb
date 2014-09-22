@@ -18,7 +18,7 @@ module CZMQ
     attach_function :zproxy,      :zproxy,    [:pointer, :pointer], :void, blocking: true
 
     def self.new_actor(&actor)
-      zactor_fn = FFI::Function.new(:void, [:pointer, :pointer]) do |zsock_t, args|
+      zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) do |zsock_t, args|
         child_pipe = Zsock.new_from_czmq_obj(zsock_t, nil)
         actor.call(child_pipe)
       end
@@ -29,7 +29,7 @@ module CZMQ
     [:zauth, :zbeacon, :zproxy].each do |meth|
       instance_eval <<-RUBY, __FILE__, __LINE__
       def new_#{meth.to_s}
-        zactor_fn = FFI::Function.new(:void, [:pointer, :pointer]) do |zsock_t, args|
+        zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) do |zsock_t, args|
           #{meth.to_s}(zsock_t, args)
         end
 
@@ -39,7 +39,7 @@ module CZMQ
     end
 
     def self.new_zmonitor(sock)
-      zactor_fn = FFI::Function.new(:void, [:pointer, :pointer]) do |zsock_t, args|
+      zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) do |zsock_t, args|
         zmonitor(zsock_t, args)
       end
 
@@ -47,7 +47,7 @@ module CZMQ
     end
 
     def self.new_zgossip(logprefix)
-      zactor_fn = FFI::Function.new(:void, [:pointer, :string]) do |zsock_t, args|
+      zactor_fn = FFI::Function.new(:void, [:pointer, :string], blocking: true) do |zsock_t, args|
         zgossip(zsock_t, args)
       end
 
