@@ -2,42 +2,58 @@
 require 'ffi-czmq'
 
 class Worker
+  include CZMQ
   extend Forwardable
 
-  def_delegators :@parent_pipe, :<<, :tell, :recv, :wait, :destructor
+  def_delegators :@parent_pipe, :<<, :tell, :recv, :wait, :signal, :destructor
 
   def initialize(id)
     @id = id
-    @parent_pipe = CZMQ::Zactor.new_actor(&method(:run))
+    @parent_pipe = Zactor.new_actor(&method(:run))
   end
 
   private
 
   def run(child_pipe)
-    @reactor = CZMQ::Zloop.new
-    @reactor.set_verbose(true)
-    @reactor.add_reader(child_pipe, &method(:handle_pipe))
-
-    config = CZMQ::Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
+    config = Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
     endpoint = config.resolve('/proxy/backend/endpoint', nil)
 
-    @worker = CZMQ::Zsock.new(config.resolve('/proxy/backend/type', nil), endpoint)
-    @worker.connect(endpoint)
+    worker = Zsock.new(config.resolve('/proxy/backend/type', nil), endpoint)
+    worker.connect(endpoint)
 
-    @reactor.add_reader(@worker, &method(:handle_worker))
+    child_pipe_sock = Zsock.convert(child_pipe)
+    worker_sock = Zsock.convert(worker)
+
+    # Zpoller currently only works with two or more sockets with new_poller
+    poller = Zpoller.new_poller(child_pipe_sock, worker_sock)
+
+    @terminated = false
 
     child_pipe.signal(0)
 
-    @reactor.start
+    until Zsys.interrupted == 1 ||@terminated
+      case poller.wait(-1)
+      when child_pipe_sock
+        handle_pipe(child_pipe)
+      when worker_sock
+        handle_worker(worker)
+      else
+        if poller.terminated
+          break
+        end
+      end
+    end
   end
 
   def handle_pipe(zsock)
     msg = zsock.recv
+    command = msg.first.to_str
 
-    case msg.first.to_str
+    Zsys.info("#{@id}: API command=#{command}")
+
+    case command
     when '$TERM'
-      zsock.signal(0)
-      -1
+      @terminated = true
     end
   end
 
@@ -77,7 +93,7 @@ trap('INT') do
 end
 
 trap('TERM') do
-  workers.each {|worker| worker.destructor }  
+  workers.each {|worker| worker.destructor }
   exit
 end
 
