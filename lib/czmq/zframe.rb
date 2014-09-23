@@ -50,6 +50,10 @@ module CZMQ
     def dup
       self.class.new_from_czmq_obj(dup_zframe)
     end
+    
+    def more?
+      more & MORE > 0
+    end
 
     def <=>(other)
       size <=> other.size
