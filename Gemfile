@@ -8,6 +8,6 @@ platforms :jruby do
   gem 'msgpack-jruby', require: 'msgpack'
 end
 
-gem 'websocket-driver', github: 'Asmod4n/websocket-driver-ruby', branch: 'patch-1'
+gem 'websocket-driver', github: 'faye/websocket-driver-ruby'
 gem 'hitimes'
 gemspec
