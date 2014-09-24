@@ -113,6 +113,14 @@ module CZMQ
       RUBY
     end
 
+    [:first=, :next=, :last=].each do |meth|
+      class_eval <<-RUBY, __FILE__, __LINE__
+      def #{meth.to_s}(content)
+         CZMQ::Zframe.reset(#{meth.to_s[0...-1]}_zframe, content, content.bytesize)
+      end
+      RUBY
+    end
+
     def pop
       Zframe.new_from_czmq_obj(pop_zframe)
     end
