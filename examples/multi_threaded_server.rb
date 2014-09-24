@@ -24,22 +24,24 @@ class Worker
     child_pipe_sock = Zsock.convert(child_pipe)
     worker_sock = Zsock.convert(worker)
 
-    # Zpoller currently only works with two or more sockets with new_poller
     poller = Zpoller.new_poller(child_pipe_sock, worker_sock)
 
     @terminated = false
 
     child_pipe.signal(0)
 
-    until Zsys.interrupted == 1 ||@terminated
-      case poller.wait(-1)
-      when child_pipe_sock
-        handle_pipe(child_pipe)
-      when worker_sock
-        handle_worker(worker)
+    until @terminated
+      which = nil
+      begin
+        which = poller.wait(-1)
+      rescue RuntimeError
+        @terminated = true
       else
-        if poller.terminated
-          break
+        case which
+        when child_pipe_sock
+          handle_pipe(child_pipe)
+        when worker_sock
+          handle_worker(worker)
         end
       end
     end
@@ -60,8 +62,9 @@ class Worker
   def handle_worker(zsock)
     msg = zsock.recv
 
-    sender = msg.first
-    zsock.tell(sender, nil, @id, 'welcome')
+    msg.last = :welcome.to_s
+    msg << @id
+    zsock.forward(msg)
   end
 end
 
