@@ -5,7 +5,7 @@ require_relative 'sock_type'
 module LibCZMQ
   def self.extended(klass)
     klass.extend FFI::Library
-    klass.ffi_lib('czmq', 'libzmq')
+    klass.ffi_lib('libzmq', 'czmq')
   end
 
   def czmq_class
@@ -28,7 +28,9 @@ module LibCZMQ
 
         instance.instance_variable_set(:@czmq_obj, czmq_obj)
         instance.instance_variable_set(:@owned_by_ruby, owned_by_ruby)
-        instance.send :setup_finalizer
+        if owned_by_ruby
+          instance.send :setup_finalizer
+        end
 
         if instance.method(:initialize).parameters.size > 0
           instance.send :initialize, czmq_obj
@@ -56,8 +58,8 @@ module LibCZMQ
 
       instance.instance_variable_set(:@czmq_obj, czmq_obj)
       instance.instance_variable_set(:@owned_by_ruby, true)
-
       instance.send :setup_finalizer
+
       if instance.method(:initialize).parameters.size > 0
         instance.send :initialize, *args
       else
@@ -89,15 +91,12 @@ module LibCZMQ
       remove_finalizer
 
       if @owned_by_ruby
-        if CZMQ::Utils.check_for_pointer(@czmq_obj)
-          FFI::MemoryPointer.new(:pointer) do |p|
-            p.write_pointer(@czmq_obj)
-            if #{czmq_class == :zsock}
-              self.class.destructor(p, __FILE__, __LINE__)
-            else
-              self.class.destructor(p)
-            end
-          end
+        p = FFI::MemoryPointer.new(:pointer)
+        p.write_pointer(@czmq_obj)
+        if #{czmq_class == :zsock}
+          self.class.destructor(p, __FILE__, __LINE__)
+        else
+          self.class.destructor(p)
         end
       end
 
@@ -108,22 +107,25 @@ module LibCZMQ
       true
     end
 
-    private
-
     def setup_finalizer
-      if @owned_by_ruby
-        at_exit { destructor }
-      end
-      ObjectSpace.define_finalizer(self, self.class.close_instance(self))
+      ObjectSpace.define_finalizer(self, self.class.close_instance(@czmq_obj.address))
     end
+
+    private
 
     def remove_finalizer
       ObjectSpace.undefine_finalizer self
     end
 
-    def self.close_instance(selfie)
+    def self.close_instance(czmq_obj)
       Proc.new do
-        selfie.destructor
+        p = FFI::MemoryPointer.new(:pointer)
+        p.write_pointer(czmq_obj)
+        if #{czmq_class == :zsock}
+          destructor(p, __FILE__, __LINE__)
+        else
+          destructor(p)
+        end
       end
     end
     RUBY
@@ -149,6 +151,7 @@ module LibCZMQ
 
           unless(#{czmq_class == :zframe} && args.last & CZMQ::Zframe::REUSE > 0)
             z_obj.instance_variable_set(:@owned_by_ruby, nil)
+            z_obj.destructor
           end
         when :insert, :append, :prepend
           if args.first.instance_variable_get(:@owned_by_ruby)
@@ -162,6 +165,7 @@ module LibCZMQ
           result = self.class.#{name}(@czmq_obj, czmq_obj)
 
           z_obj.instance_variable_set(:@owned_by_ruby, nil)
+          z_obj.destructor
         when :reload
           czmq_obj = FFI::MemoryPointer.new(:pointer)
           czmq_obj.write_pointer(@czmq_obj)
