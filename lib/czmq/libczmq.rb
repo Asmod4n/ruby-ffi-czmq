@@ -120,7 +120,7 @@ module LibCZMQ
     def self.close_instance(czmq_obj)
       Proc.new do
         p = FFI::MemoryPointer.new(:pointer)
-        p.write_pointer(czmq_obj)
+        p.write_pointer(FFI::Pointer.new(czmq_obj))
         if #{czmq_class == :zsock}
           destructor(p, __FILE__, __LINE__)
         else
