@@ -13,6 +13,7 @@ Gem::Specification.new do |gem|
   gem.require_path = 'lib'
   gem.version      = CZMQ::VERSION
 
-  gem.add_dependency 'ffi', '>= 1.0.11'
-  gem.add_development_dependency 'bundler', '>= 1.1.4'
+  gem.add_dependency 'ffi', '>= 1.9.4'
+  gem.add_dependency 'thread_safe', '>= 0.3.4'
+  gem.add_development_dependency 'bundler', '>= 1.7'
 end
