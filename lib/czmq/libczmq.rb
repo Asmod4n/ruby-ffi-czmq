@@ -8,6 +8,8 @@ module LibCZMQ
     klass.ffi_lib('libzmq', 'czmq')
   end
 
+  SAFE = /^save.*$/.freeze
+
   def czmq_class
     return @czmq_class if @czmq_class
     @czmq_class = "#{self.singleton_class.inspect.split('::').last[0...-1].downcase}".to_sym
@@ -29,7 +31,7 @@ module LibCZMQ
         instance.instance_variable_set(:@czmq_obj, czmq_obj)
         instance.instance_variable_set(:@owned_by_ruby, owned_by_ruby)
         if owned_by_ruby
-          instance.send :setup_finalizer
+          instance.setup_finalizer
         end
 
         if instance.method(:initialize).parameters.size > 0
@@ -58,7 +60,7 @@ module LibCZMQ
 
       instance.instance_variable_set(:@czmq_obj, czmq_obj)
       instance.instance_variable_set(:@owned_by_ruby, true)
-      instance.send :setup_finalizer
+      instance.setup_finalizer
 
       if instance.method(:initialize).parameters.size > 0
         instance.send :initialize, *args
@@ -108,7 +110,7 @@ module LibCZMQ
     end
 
     def setup_finalizer
-      ObjectSpace.define_finalizer(self, self.class.close_instance(@czmq_obj.address))
+      ObjectSpace.define_finalizer(self, self.class.close_instance(@czmq_obj))
     end
 
     private
@@ -120,7 +122,7 @@ module LibCZMQ
     def self.close_instance(czmq_obj)
       Proc.new do
         p = FFI::MemoryPointer.new(:pointer)
-        p.write_pointer(FFI::Pointer.new(czmq_obj))
+        p.write_pointer(czmq_obj)
         if #{czmq_class == :zsock}
           destructor(p, __FILE__, __LINE__)
         else
@@ -184,7 +186,7 @@ module LibCZMQ
         result
       when :int
         case #{function.inspect}
-        when :send,/^save.*$/
+        when :send,SAFE
           result != -1 ||fail(IOError, CZMQ::Utils.error)
         else
           if #{czmq_class == :zsock}
