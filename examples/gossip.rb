@@ -2,8 +2,13 @@
 require 'ffi-czmq'
 
 class BaseConfig
+  extend Forwardable
+
+  def_delegators :@parent_pipe, :<<, :tell, :recv, :wait, :signal, :destructor
+
   def initialize
     @parent_pipe = CZMQ::Zactor.new_actor(&method(:run))
+    at_exit { destructor }
   end
 
   private
