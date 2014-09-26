@@ -10,6 +10,7 @@ class Worker
   def initialize(id)
     @id = id
     @parent_pipe = Zactor.new_actor(&method(:run))
+    at_exit { destructor }
   end
 
   private
@@ -82,21 +83,11 @@ workers = []
 proxy.tell('FRONTEND', config.resolve('/proxy/frontend/type', nil), config.resolve('/proxy/frontend/endpoint', nil))
 proxy.wait
 
-# manual destruction is needed here i am afraid.
-# while i am trying to let the garbage collector do its work so it feels more like ruby
-# i have yet to find a way how to destroy the objects in the right order without
-# having to create a registry of sorts for czmq objects.
-# (you are supposed to terminate actors first which will then cleanup themself, but the way
-# at_exit works its the other way around ... and without the at_exit handlers
-# the process won't shut down with one SIGTERM or SIGINT, but only when you send them twice.)
-
 trap('INT') do
-  workers.each {|worker| worker.destructor }
   exit
 end
 
 trap('TERM') do
-  workers.each {|worker| worker.destructor }
   exit
 end
 
