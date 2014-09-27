@@ -8,7 +8,7 @@ module LibCZMQ
     klass.ffi_lib('libzmq', 'czmq')
   end
 
-  SAFE = /^save.*$/.freeze
+  SAVE = /^save.*$/.freeze
 
   def czmq_class
     return @czmq_class if @czmq_class
@@ -120,7 +120,7 @@ module LibCZMQ
     end
 
     def self.close_instance(czmq_obj)
-      Proc.new do
+      ->(obj_id) do
         p = FFI::MemoryPointer.new(:pointer)
         p.write_pointer(czmq_obj)
         if #{czmq_class == :zsock}
@@ -128,6 +128,7 @@ module LibCZMQ
         else
           destructor(p)
         end
+        true
       end
     end
     RUBY
@@ -186,7 +187,7 @@ module LibCZMQ
         result
       when :int
         case #{function.inspect}
-        when :send,SAFE
+        when :send,SAVE
           result != -1 ||fail(IOError, CZMQ::Utils.error)
         else
           if #{czmq_class == :zsock}

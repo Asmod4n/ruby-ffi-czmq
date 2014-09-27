@@ -70,8 +70,8 @@ module CZMQ
       Zsock.wait(@czmq_obj)
     end
 
-    def signal(rc = 0)
-      Zsock.signal(@czmq_obj, rc)
+    def signal(uchar = 0)
+      Zsock.signal(@czmq_obj, uchar)
     end
   end
 end

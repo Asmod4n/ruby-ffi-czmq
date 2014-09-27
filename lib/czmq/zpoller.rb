@@ -14,20 +14,18 @@ module CZMQ
     czmq_function :terminated,  :terminated,  [:pointer],             :bool
 
     def self.new_poller(*pollitems)
+      if pollitems.size < 2
+        fail ArgumentError, "wrong number of arguments (#{pollitems.size} for 2..n)"
+      end
+
       zsocks = []
       pollitems.each do |pollitem|
         zsocks << Zsock.convert(pollitem)
       end
-      case zsocks.size
-      when 0
-        fail ArgumentError, 'wrong number of arguments (0 for 1..n)'
-      when 1
-        new(zsocks.first, :pointer, nil)
-      else
-        first_sock = zsocks.delete(zsocks.first)
-        other_socks = ([ :pointer ] * zsocks.size).zip(zsocks).flatten
-        new(first_sock, *other_socks, :pointer, nil)
-      end
+
+      first_sock = zsocks.delete(zsocks.first)
+      other_socks = ([ :pointer ] * zsocks.size).zip(zsocks).flatten
+      new(first_sock, *other_socks, :pointer, nil)
     end
   end
 end
