@@ -12,27 +12,27 @@ module CZMQ
     czmq_constructor
     czmq_destructor
 
-    czmq_function :recv_zmsg,         :recv,          [:pointer],                     :pointer
-    czmq_function :send_zmsg,         :send,          [:pointer, :pointer],           :int
-    czmq_function :size,              :size,          [:pointer],                     :size_t
-    czmq_function :content_size,      :content_size,  [:pointer],                     :size_t
-    czmq_function :prepend_zframe,    :prepend,       [:pointer, :pointer],           :int
-    czmq_function :append_zframe,     :append,        [:pointer, :pointer],           :int
-    czmq_function :pop_zframe,        :pop,           [:pointer],                     :pointer
-    czmq_function :push_mem,          :pushmem,       [:pointer, :pointer, :size_t],  :int
-    czmq_function :add_mem,           :addmem,        [:pointer, :pointer, :size_t],  :int
-    czmq_function :push_zstr,         :pushstr,       [:pointer, :string],            :int
-    czmq_function :add_zstr,          :addstr,        [:pointer, :string],            :int
-    czmq_function :push_zstrf,        :pushstrf,      [:pointer, :string, :varargs],  :int
-    czmq_function :add_zstrf,         :addstrf,       [:pointer, :string, :varargs],  :int
-    czmq_function :remove_zframe,     :remove,        [:pointer, :pointer],           :void
-    czmq_function :first_zframe,      :first,         [:pointer],                     :pointer
-    czmq_function :next_zframe,       :next,          [:pointer],                     :pointer
-    czmq_function :last_zframe,       :last,          [:pointer],                     :pointer
-    czmq_function :encode_zmsg,       :encode,        [:pointer, :buffer_out]         :size_t
-    czmq_function :decode_zmsg,       :decode,        [:pointer, :size_t],            :pointer
-    czmq_function :dup_zmsg,          :dup,           [:pointer],                     :pointer
-    czmq_function :print,             :print,         [:pointer],                     :void
+    czmq_function :recv_zmsg,         :recv,          [:pointer],                       :pointer
+    czmq_function :send_zmsg,         :send,          [:pointer, :pointer],             :int
+    czmq_function :size,              :size,          [:pointer],                       :size_t
+    czmq_function :content_size,      :content_size,  [:pointer],                       :size_t
+    czmq_function :prepend_zframe,    :prepend,       [:pointer, :pointer],             :int
+    czmq_function :append_zframe,     :append,        [:pointer, :pointer],             :int
+    czmq_function :pop_zframe,        :pop,           [:pointer],                       :pointer
+    czmq_function :push_mem,          :pushmem,       [:pointer, :buffer_in, :size_t],  :int
+    czmq_function :add_mem,           :addmem,        [:pointer, :buffer_in, :size_t],  :int
+    czmq_function :push_zstr,         :pushstr,       [:pointer, :string],              :int
+    czmq_function :add_zstr,          :addstr,        [:pointer, :string],              :int
+    czmq_function :push_zstrf,        :pushstrf,      [:pointer, :string, :varargs],    :int
+    czmq_function :add_zstrf,         :addstrf,       [:pointer, :string, :varargs],    :int
+    czmq_function :remove_zframe,     :remove,        [:pointer, :pointer],             :void
+    czmq_function :first_zframe,      :first,         [:pointer],                       :pointer
+    czmq_function :next_zframe,       :next,          [:pointer],                       :pointer
+    czmq_function :last_zframe,       :last,          [:pointer],                       :pointer
+    czmq_function :encode_zmsg,       :encode,        [:pointer, :buffer_out]           :size_t
+    czmq_function :decode_zmsg,       :decode,        [:pointer, :size_t],              :pointer
+    czmq_function :dup_zmsg,          :dup,           [:pointer],                       :pointer
+    czmq_function :print,             :print,         [:pointer],                       :void
 
     def each
       yield first
