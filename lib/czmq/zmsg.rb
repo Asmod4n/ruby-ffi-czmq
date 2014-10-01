@@ -49,6 +49,8 @@ module CZMQ
 
     def add(data)
       case data
+      when FFI::Pointer
+        add_mem(data, data.size)
       when Zframe
         append_zframe(data)
       when String
@@ -79,6 +81,8 @@ module CZMQ
 
     def push(data)
       case data
+      when FFI::Pointer
+        push_mem(data, data.size)
       when Zframe
         prepend_zframe(data)
       when String
