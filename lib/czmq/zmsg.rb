@@ -60,7 +60,11 @@ module CZMQ
       when NilClass
         add_mem(data, 0)
       else
-        if data.respond_to?(:to_zframe)
+        if data.respond_to?(:to_ptr) &&
+           data.respond_to?(:size)
+  
+          add_mem(data.to_ptr, data.size)
+        elsif data.respond_to?(:to_zframe)
           append_zframe(data.to_zframe)
         elsif data.respond_to?(:data) &&
               data.respond_to?(:size)
@@ -92,7 +96,11 @@ module CZMQ
       when NilClass
         push_mem(data, 0)
       else
-        if data.respond_to?(:to_zframe)
+        if data.respond_to?(:to_ptr) &&
+           data.respond_to?(:size)
+           
+          push_mem(data.to_ptr, data.size)
+        elsif data.respond_to?(:to_zframe)
           prepend_zframe(data.to_zframe)
         elsif data.respond_to?(:data) &&
               data.respond_to?(:size)
