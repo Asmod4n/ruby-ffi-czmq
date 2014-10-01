@@ -11,20 +11,20 @@ module CZMQ
 
     extend ::LibCZMQ
 
-    czmq_constructor [:pointer, :size_t]
+    czmq_constructor [:buffer_in, :size_t]
     czmq_destructor
 
-    czmq_function :new_empty_zframe,  :new_empty, [],                             :pointer
-    czmq_function :recv_zframe,       :recv,      [:pointer],                     :pointer
-    czmq_function :send_zframe,       :send,      [:pointer, :pointer, :int],     :int
-    czmq_function :size,              :size,      [:pointer],                     :size_t
-    czmq_function :data,              :data,      [:pointer],                     :pointer
-    czmq_function :dup_zframe,        :dup,       [:pointer],                     :pointer
-    czmq_function :more,              :more,      [:pointer],                     :int
-    czmq_function :set_more,          :set_more,  [:pointer, :int],               :void
-    czmq_function :eq,                :eq,        [:pointer, :pointer],           :bool
-    czmq_function :reset,             :reset,     [:pointer, :pointer, :size_t],  :void
-    czmq_function :print,             :print,     [:pointer, :string],            :void
+    czmq_function :new_empty_zframe,  :new_empty, [],                               :pointer
+    czmq_function :recv_zframe,       :recv,      [:pointer],                       :pointer
+    czmq_function :send_zframe,       :send,      [:pointer, :pointer, :int],       :int
+    czmq_function :size,              :size,      [:pointer],                       :size_t
+    czmq_function :data,              :data,      [:pointer],                       :pointer
+    czmq_function :dup_zframe,        :dup,       [:pointer],                       :pointer
+    czmq_function :more,              :more,      [:pointer],                       :int
+    czmq_function :set_more,          :set_more,  [:pointer, :int],                 :void
+    czmq_function :eq,                :eq,        [:pointer, :pointer],             :bool
+    czmq_function :reset,             :reset,     [:pointer, :buffer_in, :size_t],  :void
+    czmq_function :print,             :print,     [:pointer, :string],              :void
 
     def self.new_empty
       unless (zframe = new_empty_zframe).null?
