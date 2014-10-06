@@ -110,19 +110,19 @@ module LibCZMQ
     end
 
     def setup_finalizer
-      ObjectSpace.define_finalizer(self, self.class.close_instance(@czmq_obj))
+      ObjectSpace.define_finalizer(@czmq_obj, self.class.close_instance(@czmq_obj.address))
     end
 
     private
 
     def remove_finalizer
-      ObjectSpace.undefine_finalizer self
+      ObjectSpace.undefine_finalizer @czmq_obj
     end
 
     def self.close_instance(czmq_obj)
       ->(obj_id) do
         p = FFI::MemoryPointer.new(:pointer)
-        p.write_pointer(czmq_obj)
+        p.write_pointer(FFI::Pointer.new(czmq_obj))
         if #{czmq_class == :zsock}
           destructor(p, __FILE__, __LINE__)
         else
