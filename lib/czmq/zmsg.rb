@@ -29,7 +29,7 @@ module CZMQ
     czmq_function :first_zframe,      :first,         [:pointer],                       :pointer
     czmq_function :next_zframe,       :next,          [:pointer],                       :pointer
     czmq_function :last_zframe,       :last,          [:pointer],                       :pointer
-    czmq_function :encode_zmsg,       :encode,        [:pointer, :buffer_out]           :size_t
+    czmq_function :encode_zmsg,       :encode,        [:pointer, :buffer_out],          :size_t
     czmq_function :decode_zmsg,       :decode,        [:pointer, :size_t],              :pointer
     czmq_function :dup_zmsg,          :dup,           [:pointer],                       :pointer
     czmq_function :print,             :print,         [:pointer],                       :void
@@ -62,7 +62,7 @@ module CZMQ
       else
         if data.respond_to?(:to_ptr) &&
            data.respond_to?(:size)
-  
+
           add_mem(data.to_ptr, data.size)
         elsif data.respond_to?(:to_zframe)
           append_zframe(data.to_zframe)
@@ -98,7 +98,7 @@ module CZMQ
       else
         if data.respond_to?(:to_ptr) &&
            data.respond_to?(:size)
-           
+
           push_mem(data.to_ptr, data.size)
         elsif data.respond_to?(:to_zframe)
           prepend_zframe(data.to_zframe)
