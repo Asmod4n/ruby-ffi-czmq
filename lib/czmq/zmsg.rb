@@ -5,7 +5,7 @@ require_relative 'utils'
 
 module CZMQ
   class Zmsg
-    INTF = '%d'.freeze
+    INTF = '%zd'.freeze
     include Enumerable
     extend ::LibCZMQ
 
@@ -56,7 +56,7 @@ module CZMQ
       when String
         add_string(data)
       when Fixnum
-        add_zstrf(INTF, :size_t, data)
+        add_zstrf(INTF, :ssize_t, data)
       when NilClass
         add_mem(data, 0)
       else
@@ -92,7 +92,7 @@ module CZMQ
       when String
         push_string(data)
       when Fixnum
-        push_zstrf(INTF, :size_t, data)
+        push_zstrf(INTF, :ssize_t, data)
       when NilClass
         push_mem(data, 0)
       else
