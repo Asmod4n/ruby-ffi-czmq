@@ -55,8 +55,8 @@ module CZMQ
         append_zframe(data)
       when String
         add_string(data)
-      when Integer
-        add_zstrf(INTF, :long, data)
+      when Fixnum
+        add_zstrf(INTF, :size_t, data)
       when NilClass
         add_mem(data, 0)
       else
@@ -91,8 +91,8 @@ module CZMQ
         prepend_zframe(data)
       when String
         push_string(data)
-      when Integer
-        push_zstrf(INTF, :long, data)
+      when Fixnum
+        push_zstrf(INTF, :size_t, data)
       when NilClass
         push_mem(data, 0)
       else

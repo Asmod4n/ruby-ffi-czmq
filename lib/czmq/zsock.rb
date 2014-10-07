@@ -88,7 +88,7 @@ module CZMQ
     def method_missing(meth, *args, &blk)
       if args.length == 1 &&
          meth.to_s =~ SET_SOCKOPT &&
-         (args.first.is_a?(Integer) || args.first.is_a?(String))
+         (args.first.is_a?(Fixnum) || args.first.is_a?(String))
         begin
 
           self.class.instance_eval <<-RUBY, __FILE__, __LINE__
@@ -99,7 +99,7 @@ module CZMQ
           super
         else
 
-          if args.first.is_a?(Integer)
+          if args.first.is_a?(Fixnum)
             self.class.class_eval <<-RUBY, __FILE__, __LINE__
             def #{meth.to_s}(arg)
               self.class.#{meth.to_s}(@czmq_obj, :int, arg)

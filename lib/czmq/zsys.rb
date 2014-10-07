@@ -36,7 +36,6 @@ module CZMQ
 
     at_exit do
       zctx_interrupted = interrupted = 1
-      shutdown
     end
   end
 end
