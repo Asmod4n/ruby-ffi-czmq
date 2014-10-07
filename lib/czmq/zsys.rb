@@ -5,6 +5,7 @@ module CZMQ
     extend ::LibCZMQ
 
     czmq_function :init,            :init,            [],         :pointer
+    czmq_function :shutdown,        :shutdown,        [],         :void
     czmq_function :handler_set,     :handler_set,     [:pointer], :void
     czmq_function :handler_reset,   :handler_reset,   [],         :void
     czmq_function :set_io_threads,  :set_io_threads,  [:size_t],  :void
@@ -35,6 +36,7 @@ module CZMQ
 
     at_exit do
       zctx_interrupted = interrupted = 1
+      shutdown
     end
   end
 end
