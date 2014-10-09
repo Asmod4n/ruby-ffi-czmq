@@ -36,7 +36,7 @@ module CZMQ
 
         return czmq_obj.to_zactor
       else
-        fail ArgumentError, "#{czmq_obj.class} is not a CZMQ::Zsock or CZMQ::Zactor"
+        fail ArgumentError, "#{czmq_obj.class} is not a CZMQ::Zsock or CZMQ::Zactor", caller
       end
     end
 

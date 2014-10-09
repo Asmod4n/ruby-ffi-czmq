@@ -30,7 +30,7 @@ module CZMQ
       unless (zframe = new_empty_zframe).null?
         new_from_czmq_obj(zframe)
       else
-        fail Utils.error
+        fail RuntimeError, Utils.error, caller
       end
     end
 
@@ -43,14 +43,14 @@ module CZMQ
 
         return frame.to_zframe
       else
-        fail ArgumentError, "#{frame.class} is not a CZMQ::Zframe"
+        fail ArgumentError, "#{frame.class} is not a CZMQ::Zframe", caller
       end
     end
 
     def dup
       self.class.new_from_czmq_obj(dup_zframe)
     end
-    
+
     def more?
       more & MORE > 0
     end
@@ -77,7 +77,7 @@ module CZMQ
       unless (zframe = recv_zframe(zsock)).null?
         new_from_czmq_obj(zframe)
       else
-        fail IOError, Utils.error
+        fail IOError, Utils.error, caller
       end
     end
   end

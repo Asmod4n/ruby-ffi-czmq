@@ -28,7 +28,7 @@ if CZMQ::Utils.has_curve
 
           return cert.to_zcert
         else
-          fail ArgumentError, "#{cert.class} is not a CZMQ::Zcert"
+          fail ArgumentError, "#{cert.class} is not a CZMQ::Zcert", caller
         end
       end
 
@@ -36,7 +36,7 @@ if CZMQ::Utils.has_curve
         unless (zcert = load_zcert(filename)).null?
           new_from_czmq_obj(zcert)
         else
-          fail IOError, Utils.error
+          fail IOError, Utils.error, caller
         end
       end
 

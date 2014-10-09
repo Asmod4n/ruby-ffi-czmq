@@ -5,7 +5,7 @@ module CZMQ
     HEXY = 'H*'.freeze
     extend FFI::Library
 
-    ffi_lib 'czmq', 'libzmq'
+    ffi_lib :libzmq, :czmq
 
     attach_function :zmq_version,   :zmq_version,     [:buffer_in, :buffer_in, :buffer_in], :void,    blocking: true
     attach_function :zsys_version,  :zsys_version,    [:buffer_in, :buffer_in, :buffer_in], :void,    blocking: true
@@ -44,7 +44,7 @@ module CZMQ
       end
 
       def bin2hex(bytes)
-        bytes.unpack(HEXY).first
+        bytes.to_str.unpack(HEXY).first
       end
 
       def hex2bin(hex)

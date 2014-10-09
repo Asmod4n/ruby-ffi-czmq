@@ -29,7 +29,7 @@ module CZMQ
       unless (zconfig = load_zconfig(filename)).null?
         new_from_czmq_obj(zconfig)
       else
-        fail IOError, Utils.error
+        fail IOError, Utils.error, caller
       end
     end
 
@@ -54,7 +54,7 @@ module CZMQ
       unless (zconfig = locate_zconfig(path)).null?
         self.class.new_from_czmq_obj(zconfig, nil)
       else
-        fail Utils.error
+        fail RuntimeError, Utils.error, caller
       end
     end
 
@@ -62,7 +62,7 @@ module CZMQ
       unless (zconfig = zconfig_at_depth(level)).null?
         self.class.new_from_czmq_obj(zconfig, nil)
       else
-        fail Utils.error
+        fail RuntimeError, Utils.error, caller
       end
     end
   end

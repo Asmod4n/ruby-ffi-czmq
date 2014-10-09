@@ -75,7 +75,7 @@ module CZMQ
         elsif data.nil?
           add_mem(nil, 0)
         else
-          fail ArgumentError, 'Unknown data type'
+          fail ArgumentError, 'Unknown data type', caller
         end
       end
       self
@@ -111,7 +111,7 @@ module CZMQ
         elsif data.nil?
           push_mem(nil, 0)
         else
-          fail ArgumentError, 'Unknown data type'
+          fail ArgumentError, 'Unknown data type', caller
         end
       end
       self
@@ -151,7 +151,7 @@ module CZMQ
       unless (zmsg = recv_zmsg(zsock)).null?
         new_from_czmq_obj(zmsg)
       else
-        fail IOError, Utils.error
+        fail IOError, Utils.error, caller
       end
     end
 
@@ -159,7 +159,7 @@ module CZMQ
       buffer = FFI::MemoryPointer.new(:pointer)
       size = encode_zmsg(buffer)
       bPtr = buffer.read_pointer()
-      bPtr.null? ? fail(Utils.error) : bPtr.read_bytes(size)
+      bPtr.null? ? fail(RuntimeError, Utils.error, caller) : bPtr.read_bytes(size)
     end
 
     def self.decode(bytes)

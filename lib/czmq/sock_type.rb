@@ -42,7 +42,7 @@ module CZMQ
 
           return new code if code
 
-          fail ArgumentError, "Can't coerce #{object.class}(#{object}) to #{self}"
+          fail ArgumentError, "Can't coerce #{object.class}(#{object}) to #{self}", caller
         end
         alias_method :[], :coerce
 

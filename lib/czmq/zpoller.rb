@@ -15,7 +15,7 @@ module CZMQ
 
     def self.new_poller(*pollitems)
       if pollitems.size < 2
-        fail ArgumentError, "wrong number of arguments (#{pollitems.size} for 2..n)"
+        fail ArgumentError, "wrong number of arguments (#{pollitems.size} for 2..n)", caller
       end
 
       zsocks = []

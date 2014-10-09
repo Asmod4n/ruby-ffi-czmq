@@ -5,7 +5,7 @@ require_relative 'sock_type'
 module LibCZMQ
   def self.extended(klass)
     klass.extend FFI::Library
-    klass.ffi_lib('libzmq', 'czmq')
+    klass.ffi_lib(:libzmq, :czmq)
   end
 
   SAVE = /^save.*$/.freeze
@@ -42,7 +42,7 @@ module LibCZMQ
 
         instance
       else
-        fail ArgumentError, "Didn't pass a valid Pointer"
+        fail ArgumentError, "Didn't pass a valid Pointer", caller
       end
     end
 
@@ -56,7 +56,7 @@ module LibCZMQ
         czmq_obj = instance.class.constructor(*args)
       end
 
-      !czmq_obj.null? ||fail("Cannot allocate #{czmq_class} because of #{CZMQ::Utils.error}")
+      !czmq_obj.null? ||fail(RuntimeError, "Cannot allocate #{czmq_class} because of #{CZMQ::Utils.error}", caller)
 
       instance.instance_variable_set(:@czmq_obj, czmq_obj)
       instance.instance_variable_set(:@owned_by_ruby, true)
@@ -178,22 +178,22 @@ module LibCZMQ
         end
 
       else
-        fail "#{czmq_class} is not initialized"
+        fail RuntimeError, "#{czmq_class} is not initialized", caller
       end
 
       case #{returns.inspect}
       when :pointer
-        !result.null? ||fail(CZMQ::Utils.error)
+        !result.null? ||fail(RuntimeError, CZMQ::Utils.error, caller)
         result
       when :int
         case #{function.inspect}
         when :send,SAVE
-          result != -1 ||fail(IOError, CZMQ::Utils.error)
+          result != -1 ||fail(IOError, CZMQ::Utils.error, caller)
         else
           if #{czmq_class == :zsock}
-            result != -1 ||fail(IOError, CZMQ::Utils.error)
+            result != -1 ||fail(IOError, CZMQ::Utils.error, caller)
           else
-            result != -1 ||fail(CZMQ::Utils.error)
+            result != -1 ||fail(RuntimeError, CZMQ::Utils.error, caller)
           end
         end
         result
