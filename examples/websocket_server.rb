@@ -39,18 +39,19 @@ class Client
 end
 
 class Server
+  include CZMQ
   extend Forwardable
 
   def_delegators :@parent_pipe, :<<, :tell, :recv, :wait, :signal, :destructor
 
   def initialize
-    @parent_pipe = CZMQ::Zactor.new_actor(&method(:run))
+    @parent_pipe = Zactor.new_actor(&method(:run))
     at_exit { destructor }
   end
 
   def disconnect(client_id)
     @clients.delete(client_id)
-    @server.tell(client_id, nil)
+    write(client_id, nil)
   end
 
   def write(client_id, data)
@@ -60,10 +61,10 @@ class Server
   private
 
   def run(child_pipe)
-    @reactor = CZMQ::Zloop.new
+    @reactor = Zloop.new
     @reactor.add_reader(child_pipe, &method(:handle_pipe))
 
-    @server = CZMQ::Zsock.new_stream('@tcp://*:7002')
+    @server = Zsock.new_stream('@tcp://*:7002')
     @server.set_maxmsgsize(1024 * 1024)
 
     @reactor.add_reader(@server, &method(:handle_server))

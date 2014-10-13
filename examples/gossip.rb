@@ -2,23 +2,24 @@
 require 'ffi-czmq'
 
 class BaseConfig
+  include CZMQ
   extend Forwardable
 
   def_delegators :@parent_pipe, :<<, :tell, :recv, :wait, :signal, :destructor
 
   def initialize
-    @parent_pipe = CZMQ::Zactor.new_actor(&method(:run))
+    @parent_pipe = Zactor.new_actor(&method(:run))
     at_exit { destructor }
   end
 
   private
 
   def run(child_pipe)
-    @reactor = CZMQ::Zloop.new
+    @reactor = Zloop.new
     @reactor.add_reader(child_pipe, &method(:handle_pipe))
 
-    config = CZMQ::Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
-    @base = CZMQ::Zactor.new_zgossip(config.resolve('/gossip/base/logprefix', nil))
+    config = Zconfig.load("#{File.dirname(__FILE__)}/examples.cfg")
+    @base = Zactor.new_zgossip(config.resolve('/gossip/base/logprefix', nil))
     @base.tell('BIND', config.resolve('/gossip/base/endpoint', nil))
 
     @reactor.add_reader(@base, &method(:handle_gossip))
@@ -38,7 +39,7 @@ class BaseConfig
   end
 
   def handle_gossip(zsock)
-    puts zsock.recv.to_a.inspect
+    puts zsock.recv.print
     0
   end
 end

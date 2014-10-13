@@ -56,7 +56,7 @@ module LibCZMQ
         czmq_obj = instance.class.constructor(*args)
       end
 
-      !czmq_obj.null? ||fail(RuntimeError, "Cannot allocate #{czmq_class} because of #{CZMQ::Utils.error}", caller)
+      !czmq_obj.null? ||fail(NoMemoryError, "Cannot allocate #{czmq_class} because of #{CZMQ::Utils.error}", caller)
 
       instance.instance_variable_set(:@czmq_obj, czmq_obj)
       instance.instance_variable_set(:@owned_by_ruby, true)
@@ -183,7 +183,7 @@ module LibCZMQ
 
       case #{returns.inspect}
       when :pointer
-        !result.null? ||fail(RuntimeError, CZMQ::Utils.error, caller)
+        !result.null? ||fail(NoMemoryError, CZMQ::Utils.error, caller)
         result
       when :int
         case #{function.inspect}

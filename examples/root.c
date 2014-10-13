@@ -2,7 +2,8 @@
 
 int handle_pipe(zloop_t *loop, zsock_t *root, void *arg) {
   zmsg_t *msg = zmsg_recv (root);
-  assert (msg);
+  if (!msg)
+    return -1;
 
   zmsg_print (msg);
 
@@ -24,7 +25,7 @@ int main (void) {
   zloop_t *reactor = zloop_new ();
   assert (reactor);
 
-  zloop_set_verbose(reactor, true);
+  zloop_set_verbose (reactor, true);
 
   rc = zloop_reader (reactor, root, handle_pipe, NULL);
   assert (rc == 0);
