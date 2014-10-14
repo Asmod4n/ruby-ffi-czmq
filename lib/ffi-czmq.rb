@@ -1,6 +1,7 @@
 ﻿require_relative 'czmq/utils'
 require_relative 'czmq/libczmq'
 require_relative 'czmq/zsys'
+require_relative 'czmq/zlogger'
 require_relative 'czmq/zframe'
 require_relative 'czmq/zmsg'
 require_relative 'czmq/zsock'
