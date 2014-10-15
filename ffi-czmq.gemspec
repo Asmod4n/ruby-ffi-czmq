@@ -13,6 +13,6 @@ Gem::Specification.new do |gem|
   gem.version      = CZMQ::VERSION
 
   gem.required_ruby_version = '>= 1.9.3'
-  gem.add_dependency 'ffi', '>= 1.9.5'
-  gem.add_development_dependency 'bundler', '>= 1.7'
+  gem.add_dependency 'ffi', '>= 1.9.6'
+  gem.add_development_dependency 'rspec', '>= 3.1.0'
 end
