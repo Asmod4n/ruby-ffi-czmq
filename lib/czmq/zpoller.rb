@@ -1,10 +1,11 @@
 ﻿require_relative 'libczmq'
+require_relative 'zsock'
 
 module CZMQ
   class Zpoller
     extend ::LibCZMQ
 
-    czmq_constructor [:pointer, :varargs]
+    czmq_constructor [:varargs]
     czmq_destructor
 
     czmq_function :add,         :add,         [:pointer,  :pointer],  :int
@@ -20,12 +21,11 @@ module CZMQ
 
       zsocks = []
       pollitems.each do |pollitem|
+        zsocks << :pointer
         zsocks << Zsock.convert(pollitem)
       end
 
-      first_sock = zsocks.delete(zsocks.first)
-      other_socks = ([ :pointer ] * zsocks.size).zip(zsocks).flatten
-      new(first_sock, *other_socks, :pointer, nil)
+      new(*zsocks, :pointer, nil)
     end
   end
 end
