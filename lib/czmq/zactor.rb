@@ -13,7 +13,7 @@ module CZMQ
     czmq_function   :resolve,     :resolve,   [:pointer],           :pointer
     attach_function :zauth,       :zauth,     [:pointer, :pointer], :void, blocking: true
     attach_function :zbeacon,     :zbeacon,   [:pointer, :pointer], :void, blocking: true
-    attach_function :zgossip,     :zgossip,   [:pointer, :pointer], :void, blocking: true
+    attach_function :zgossip,     :zgossip,   [:pointer, :string],  :void, blocking: true
     attach_function :zmonitor,    :zmonitor,  [:pointer, :pointer], :void, blocking: true
     attach_function :zproxy,      :zproxy,    [:pointer, :pointer], :void, blocking: true
 
@@ -28,30 +28,24 @@ module CZMQ
 
     [:zauth, :zbeacon, :zproxy].each do |meth|
       instance_eval <<-RUBY, __FILE__, __LINE__
+      const_set("#{meth.to_s.upcase}", FFI::Function.new(:void, [:pointer, :pointer], blocking: true) {|zsock_t, args| #{meth.to_s}(zsock_t, args)})
+  
       def new_#{meth.to_s}
-        zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) do |zsock_t, args|
-          #{meth.to_s}(zsock_t, args)
-        end
-
-        new(zactor_fn, nil)
+        new(#{meth.to_s.upcase}, nil)
       end
       RUBY
     end
 
-    def self.new_zmonitor(sock)
-      zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) do |zsock_t, args|
-        zmonitor(zsock_t, args)
-      end
+    ZMONITOR = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) {|zsock_t, args| zmonitor(zsock_t, args)}
 
-      new(zactor_fn, Zsock.convert(sock))
+    def self.new_zmonitor(sock)
+      new(ZMONITOR, Zsock.convert(sock))
     end
 
-    def self.new_zgossip(logprefix)
-      zactor_fn = FFI::Function.new(:void, [:pointer, :string], blocking: true) do |zsock_t, args|
-        zgossip(zsock_t, args)
-      end
+    ZGOSSIP = FFI::Function.new(:void, [:pointer, :string], blocking: true) {|zsock_t, args| zgossip(zsock_t, args)}
 
-      new(zactor_fn, logprefix)
+    def self.new_zgossip(logprefix)
+      new(ZGOSSIP, logprefix)
     end
 
     def tell(*msgs)
