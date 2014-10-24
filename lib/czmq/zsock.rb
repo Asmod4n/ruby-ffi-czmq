@@ -42,9 +42,9 @@ module CZMQ
 
     [:rep, :router, :pull, :pub, :xpub].each do |meth|
       instance_eval <<-RUBY, __FILE__, __LINE__
-      def new_#{meth.to_s}(endpoints)
-        sock = new(#{meth.inspect}, endpoints)
-        sock.attach(endpoints, true)
+      def new_#{meth.to_s}(endpoint)
+        sock = new(#{meth.inspect}, endpoint)
+        sock.attach(endpoint, true)
         sock
       end
       RUBY
@@ -52,20 +52,18 @@ module CZMQ
 
     [:req, :dealer, :push, :xsub, :pair, :stream].each do |meth|
       instance_eval <<-RUBY, __FILE__, __LINE__
-      def new_#{meth.to_s}(endpoints)
-        sock = new(#{meth.inspect}, endpoints)
-        sock.attach(endpoints, false)
+      def new_#{meth.to_s}(endpoint)
+        sock = new(#{meth.inspect}, endpoint)
+        sock.attach(endpoint, false)
         sock
       end
       RUBY
     end
 
-    def self.new_sub(endpoints, *subscriptions)
-      sock = new(:sub, endpoints, *subscriptions)
-      sock.attach(endpoints, false)
-      subscriptions.each do |subscription|
-        sock.set_subscribe(subscription)
-      end
+    def self.new_sub(endpoint, subscribe)
+      sock = new(:sub, endpoint, subscribe)
+      sock.attach(endpoint, false)
+      sock.set_subscribe(subscribe)
       sock
     end
 
