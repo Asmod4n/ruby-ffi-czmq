@@ -20,7 +20,7 @@ module CZMQ
     def self.new_actor(&actor)
       zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) do |zsock_t, args|
         child_pipe = Zsock.new_from_czmq_obj(zsock_t, nil)
-        actor.call(child_pipe)
+        yield child_pipe
       end
 
       new(zactor_fn, nil)
