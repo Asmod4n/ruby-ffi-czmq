@@ -17,37 +17,37 @@ module CZMQ
     czmq_function :start,         :start,         [:pointer],                                       :int
 
     def initialize
-      @reader_callbacks = []
-      @timer_callbacks  = []
+      @reader_callbacks = {}
+      @timer_callbacks  = {}
     end
 
     def add_reader(zsock, &block)
       zloop_reader_fn = FFI::Function.new(:int, [:pointer, :pointer, :pointer], blocking: true) do |zloop_t, zsock_t, args|
         zsocky = Zsock.new_from_czmq_obj(zsock_t, nil)
-        block.call(zsocky)
+        yield zsocky
       end
 
       reader(Zsock.convert(zsock), zloop_reader_fn, nil)
-      @reader_callbacks << {zsock: zsock, zloop_reader_fn: zloop_reader_fn, block: block}
+      @reader_callbacks[zloop_reader_fn] = zsock
     end
 
     def remove_reader(zsock)
-      @reader_callbacks.delete_if {|reader| reader[:zsock] == zsock}
+      @reader_callbacks.delete_if {|reader, sock| sock == zsock}
       reader_end(Zsock.convert(zsock))
     end
 
     def add_timer(delay, times, &block)
       zloop_timer_fn = FFI::Function.new(:int, [:pointer, :int, :pointer], blocking: true) do |zloop_t, timer_id, args|
-        block.call(timer_id)
+        yield timer_id
       end
 
       timer_id = timer(delay, times, zloop_timer_fn, nil)
-      @timer_callbacks << {timer_id: timer_id, delay: delay, times: times, zloop_timer_fn: zloop_timer_fn, block: block}
+      @timer_callbacks[timer_id] = zloop_timer_fn
       timer_id
     end
 
     def remove_timer(timer_id)
-      @timer_callbacks.delete_if {|timer| timer[:timer_id] == timer_id}
+      @timer_callbacks.delete(timer_id)
       timer_end(timer_id)
     end
   end
