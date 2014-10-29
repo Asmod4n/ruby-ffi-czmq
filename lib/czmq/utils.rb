@@ -9,8 +9,8 @@ module CZMQ
 
     attach_function :zmq_version,   :zmq_version,     [:buffer_in, :buffer_in, :buffer_in], :void,    blocking: true
     attach_function :zsys_version,  :zsys_version,    [:buffer_in, :buffer_in, :buffer_in], :void,    blocking: true
-    attach_function :errno,         :zmq_errno,       [],                                   :int,     blocking: true
-    attach_function :strerror,      :zmq_strerror,    [:int],                               :string,  blocking: true
+    attach_function :errno,         :zmq_errno,       [],                                   :int
+    attach_function :strerror,      :zmq_strerror,    [:int],                               :string
 
     module_function
 
