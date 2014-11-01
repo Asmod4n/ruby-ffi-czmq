@@ -20,8 +20,8 @@ module CZMQ
     czmq_function :size,              :size,      [:pointer],                       :size_t
     czmq_function :data,              :data,      [:pointer],                       :pointer
     czmq_function :dup_zframe,        :dup,       [:pointer],                       :pointer
-    czmq_function :more,              :more,      [:pointer],                       :int
-    czmq_function :set_more,          :set_more,  [:pointer, :int],                 :void
+    czmq_function :more,              :more,      [:pointer],                       :bool
+    czmq_function :set_more,          :set_more,  [:pointer, :bool],                :void
     czmq_function :eq,                :eq,        [:pointer, :pointer],             :bool
     czmq_function :reset,             :reset,     [:pointer, :buffer_in, :size_t],  :void
     czmq_function :print,             :print,     [:pointer, :string],              :void
@@ -52,7 +52,7 @@ module CZMQ
     end
 
     def more?
-      more & MORE > 0
+      more
     end
 
     def <=>(other)

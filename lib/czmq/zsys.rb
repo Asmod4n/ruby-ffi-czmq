@@ -16,7 +16,7 @@ module CZMQ
     czmq_function :set_rcvhwm,      :set_rcvhwm,      [:size_t],  :void
     czmq_function :set_pipehwm,     :set_pipehwm,     [:size_t],  :void
     czmq_function :pipehwm,         :pipehwm,         [],         :size_t
-    czmq_function :set_ipv6,        :set_ipv6,        [:int],     :void
+    czmq_function :set_ipv6,        :set_ipv6,        [:bool],    :void
     czmq_function :set_interface,   :set_interface,   [:string],  :void
     czmq_function :set_logident,    :set_logident,    [:string],  :void
     czmq_function :set_logstream,   :set_logstream,   [:pointer], :void
@@ -30,9 +30,10 @@ module CZMQ
 
     attach_variable :interrupted, :zsys_interrupted, :bool
     attach_variable :zctx_interrupted, :zctx_interrupted, :bool
+    attach_variable :allocs, :zsys_allocs, :uint64
 
     handler_set(nil)
-    set_ipv6(1)
+    set_ipv6(true)
 
     at_exit do
       zctx_interrupted = interrupted = true

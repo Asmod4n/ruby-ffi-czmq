@@ -19,8 +19,7 @@ module CZMQ
 
     def self.new_actor(&actor)
       zactor_fn = FFI::Function.new(:void, [:pointer, :pointer], blocking: true) do |zsock_t, args|
-        child_pipe = Zsock.new_from_czmq_obj(zsock_t, nil)
-        yield child_pipe
+        yield Zsock.new_from_czmq_obj(zsock_t, nil)
       end
 
       new(zactor_fn, nil)
@@ -29,7 +28,7 @@ module CZMQ
     [:zauth, :zbeacon, :zproxy].each do |meth|
       instance_eval <<-RUBY, __FILE__, __LINE__
       const_set("#{meth.to_s.upcase}", FFI::Function.new(:void, [:pointer, :pointer], blocking: true) {|zsock_t, args| #{meth.to_s}(zsock_t, args)})
-  
+
       def new_#{meth.to_s}
         new(#{meth.to_s.upcase}, nil)
       end

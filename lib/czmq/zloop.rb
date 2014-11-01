@@ -23,8 +23,7 @@ module CZMQ
 
     def add_reader(zsock, &block)
       zloop_reader_fn = FFI::Function.new(:int, [:pointer, :pointer, :pointer], blocking: true) do |zloop_t, zsock_t, args|
-        zsocky = Zsock.new_from_czmq_obj(zsock_t, nil)
-        yield zsocky
+        yield Zsock.new_from_czmq_obj(zsock_t, nil)
       end
 
       reader(Zsock.convert(zsock), zloop_reader_fn, nil)
