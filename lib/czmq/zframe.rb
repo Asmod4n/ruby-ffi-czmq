@@ -1,5 +1,6 @@
 ﻿require_relative 'libczmq'
 require_relative 'utils'
+require_relative 'zstr'
 require_relative 'zsock'
 
 module CZMQ
@@ -20,6 +21,8 @@ module CZMQ
     czmq_function :size,              :size,      [:pointer],                       :size_t
     czmq_function :data,              :data,      [:pointer],                       :pointer
     czmq_function :dup_zframe,        :dup,       [:pointer],                       :pointer
+    czmq_function :strhex,            :strhex,    [:pointer],                       :pointer
+    czmq_function :strdup,            :strdup,    [:pointer],                       :pointer
     czmq_function :more,              :more,      [:pointer],                       :bool
     czmq_function :set_more,          :set_more,  [:pointer, :bool],                :void
     czmq_function :eq,                :eq,        [:pointer, :pointer],             :bool
@@ -49,6 +52,14 @@ module CZMQ
 
     def dup
       self.class.new_from_czmq_obj(dup_zframe)
+    end
+
+    def str_hex
+      Zstr.read_string(strhex)
+    end
+
+    def str_dup
+      Zstr.read_string(strdup)
     end
 
     def more?

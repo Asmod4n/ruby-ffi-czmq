@@ -15,15 +15,11 @@ module CZMQ
 
     class << self
       def read_string(str_ptr)
-        if Utils.check_for_pointer(str_ptr)
-          str = str_ptr.read_string
-          free_ptr = FFI::MemoryPointer.new(:pointer)
-          free_ptr.write_pointer(str_ptr)
-          free(free_ptr)
-          str
-        else
-          fail ArgumentError, "#{str_ptr.class} is not a FFI::Pointer", caller
-        end
+        str = str_ptr.get_string(0)
+        free_ptr = FFI::MemoryPointer.new(:pointer)
+        free_ptr.write_pointer(str_ptr)
+        free(free_ptr)
+        str
       end
 
       def recv(socket)
@@ -55,7 +51,7 @@ module CZMQ
 
         strings = []
         buffers.select {|buffer| buffer != :buffer_out}.each do |buffer|
-          strings << buffer.read_pointer.read_string
+          strings << buffer.read_pointer.get_string(0)
           free(buffer)
         end
         strings
