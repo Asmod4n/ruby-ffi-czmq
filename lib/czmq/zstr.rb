@@ -27,7 +27,7 @@ module CZMQ
       end
 
       def sendx(socket, string, *strings)
-        if strings.size == 0
+        if strings.size.zero?
           fail ArgumentError, "Wrong number of Arguments, (2 for 3..n)", caller
         end
 

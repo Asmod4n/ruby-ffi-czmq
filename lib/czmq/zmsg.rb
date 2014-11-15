@@ -54,7 +54,7 @@ module CZMQ
       when Zframe
         append_zframe(data)
       when String
-        add_string(data)
+        add_mem(data, data.bytesize)
       when Fixnum
         add_zstrf(INTF, :ssize_t, data)
       when NilClass
@@ -71,7 +71,7 @@ module CZMQ
 
           add_mem(data.data, data.size)
         elsif data.respond_to?(:to_str)
-          add_string(data.to_str)
+          add_mem(data.to_str, data.to_str.bytesize)
         elsif data.nil?
           add_mem(nil, 0)
         else
@@ -90,7 +90,7 @@ module CZMQ
       when Zframe
         prepend_zframe(data)
       when String
-        push_string(data)
+        push_mem(data, data.bytesize)
       when Fixnum
         push_zstrf(INTF, :ssize_t, data)
       when NilClass
@@ -107,7 +107,7 @@ module CZMQ
 
           push_mem(data.data, data.size)
         elsif data.respond_to?(:to_str)
-          push_string(data.to_str)
+          push_mem(data.to_str, data.to_str.bytesize)
         elsif data.nil?
           push_mem(nil, 0)
         else
@@ -164,24 +164,6 @@ module CZMQ
 
     def self.decode(bytes)
       new_from_czmq_obj(decode_zmsg(bytes, bytes.bytesize))
-    end
-
-    private
-
-    def add_string(string)
-      if string.encoding == Encoding::ASCII_8BIT
-        add_mem(string, string.size)
-      else
-        add_zstr(string)
-      end
-    end
-
-    def push_string(string)
-      if string.encoding == Encoding::ASCII_8BIT
-        push_mem(string, string.size)
-      else
-        push_zstr(string)
-      end
     end
   end
 end

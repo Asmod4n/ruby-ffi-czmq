@@ -16,13 +16,13 @@ module CZMQ
 
     def version
       unless @version
-        z_major = FFI::MemoryPointer.new :int
-        z_minor = FFI::MemoryPointer.new :int
-        z_patch = FFI::MemoryPointer.new :int
+        z_major = FFI::MemoryPointer.new :pointer
+        z_minor = FFI::MemoryPointer.new :pointer
+        z_patch = FFI::MemoryPointer.new :pointer
 
-        c_major = FFI::MemoryPointer.new :int
-        c_minor = FFI::MemoryPointer.new :int
-        c_patch = FFI::MemoryPointer.new :int
+        c_major = FFI::MemoryPointer.new :pointer
+        c_minor = FFI::MemoryPointer.new :pointer
+        c_patch = FFI::MemoryPointer.new :pointer
 
         zmq_version  z_major, z_minor, z_patch
         zsys_version c_major, c_minor, c_patch
@@ -54,8 +54,6 @@ module CZMQ
 
     if version[:czmq][:major] < 3
       fail LoadError, 'This needs at least czmq 3'
-    else
-      attach_function :has_curve, :zsys_has_curve,  [], :bool,  blocking: true
     end
   end
 end

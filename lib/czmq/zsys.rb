@@ -27,13 +27,13 @@ module CZMQ
     czmq_function :notice,          :notice,          [:string],  :void
     czmq_function :info,            :info,            [:string],  :void
     czmq_function :debug,           :debug,           [:string],  :void
+    czmq_function :has_curve,       :has_curve,       [],         :bool
 
     attach_variable :interrupted, :zsys_interrupted, :bool
     attach_variable :zctx_interrupted, :zctx_interrupted, :bool
     attach_variable :allocs, :zsys_allocs, :uint64
 
     handler_set(nil)
-    set_ipv6(true)
 
     at_exit do
       zctx_interrupted = interrupted = true
