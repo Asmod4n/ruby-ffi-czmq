@@ -71,7 +71,8 @@ module CZMQ
 
           add_mem(data.data, data.size)
         elsif data.respond_to?(:to_str)
-          add_mem(data.to_str, data.to_str.bytesize)
+          str = data.to_str
+          add_mem(str, str.bytesize)
         elsif data.nil?
           add_mem(nil, 0)
         else
@@ -107,7 +108,8 @@ module CZMQ
 
           push_mem(data.data, data.size)
         elsif data.respond_to?(:to_str)
-          push_mem(data.to_str, data.to_str.bytesize)
+          str = data.to_str
+          push_mem(str, str.bytesize)
         elsif data.nil?
           push_mem(nil, 0)
         else

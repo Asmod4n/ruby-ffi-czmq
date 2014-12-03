@@ -1,4 +1,4 @@
-require 'ffi'
+﻿require 'ffi'
 
 module Libzmq
   extend FFI::Library
@@ -10,7 +10,11 @@ module Libzmq
   POLLPRI = 8
 
   class PollItem < FFI::Struct
-    FD_TYPE = (FFI::Platform.windows? && FFI::Platform::ADDRESS_SIZE == 64) ? :uint64 : :int
+    FD_TYPE = if FFI::Platform.windows? # ftp://ftp.microsoft.com/bussys/winsock/winsock2/winsock2.h:84
+                (FFI::Platform::ADDRESS_SIZE == 64) ? :uint64_t : :uint
+              else
+                :int
+              end
 
     layout  :socket,  :pointer,
             :fd,      FD_TYPE,
