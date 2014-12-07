@@ -34,15 +34,14 @@ module Libzmq
     end
   end
 
-  attach_function  :memmove,             [:pointer, :pointer, :size_t],  :pointer
-  attach_function  :poll,    :zmq_poll,  [:pointer, :int, :long],        :int,  blocking: true
+  attach_function  :poll, :zmq_poll,  [:pointer, :int, :long], :int,  blocking: true
 
   class PollItems < Array
     def to_ptr
       items_pointer = FFI::MemoryPointer.new(PollItem, size, true)
       offset = 0
       each do |item|
-        Libzmq.memmove(items_pointer + offset, item, item.size)
+        (items_pointer + offset).__copy_from__(item.to_ptr, item.size)
         offset += item.size
       end
       items_pointer

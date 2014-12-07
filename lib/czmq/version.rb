@@ -1,3 +1,3 @@
 ﻿module CZMQ
-  VERSION = Gem::Version.new('0.1.1.pre')
+  VERSION = Gem::Version.new('0.1.2.pre')
 end
