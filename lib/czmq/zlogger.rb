@@ -1,25 +1,27 @@
-require_relative 'zsys'
+﻿require_relative 'zsys'
 
 module CZMQ
   class Zlogger
+    STR = '%s'.freeze
+
     def fatal(message)
-      Zsys.error(message)
+      Zsys.error(STR, :string, message)
     end
-    
+
     def error(message)
-      Zsys.warning(message)
+      Zsys.warning(STR, :string, message)
     end
-    
+
     def warn(message)
-      Zsys.notice(message)
+      Zsys.notice(STR, :string, message)
     end
-    
+
     def info(message)
-      Zsys.info(message)
+      Zsys.info(STR, :string, message)
     end
-    
+
     def debug(message)
-      Zsys.debug(message)
+      Zsys.debug(STR, :string, message)
     end
   end
 end

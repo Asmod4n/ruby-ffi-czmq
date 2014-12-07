@@ -22,12 +22,12 @@ module CZMQ
     czmq_function :set_logstream,   :set_logstream,   [:pointer], :void
     czmq_function :set_logsender,   :set_logsender,   [:string],  :void
     czmq_function :set_logsystem,   :set_logsystem,   [:bool],    :void
-    czmq_function :error,           :error,           [:string],  :void
-    czmq_function :warning,         :warning,         [:string],  :void
-    czmq_function :notice,          :notice,          [:string],  :void
-    czmq_function :info,            :info,            [:string],  :void
-    czmq_function :debug,           :debug,           [:string],  :void
     czmq_function :has_curve,       :has_curve,       [],         :bool
+    czmq_function :error,           :error,           [:string, :varargs],  :void
+    czmq_function :warning,         :warning,         [:string, :varargs],  :void
+    czmq_function :notice,          :notice,          [:string, :varargs],  :void
+    czmq_function :info,            :info,            [:string, :varargs],  :void
+    czmq_function :debug,           :debug,           [:string, :varargs],  :void
 
     attach_variable :interrupted, :zsys_interrupted, :bool
     attach_variable :zctx_interrupted, :zctx_interrupted, :bool
