@@ -2,7 +2,7 @@
 
 module Libzmq
   extend FFI::Library
-  ffi_lib :libzmq, FFI::Library::LIBC
+  ffi_lib :libzmq
 
   POLLIN  = 1
   POLLOUT = 2
@@ -31,6 +31,10 @@ module Libzmq
 
     def error?
       (self[:revents] & POLLERR) > 0
+    end
+
+    def priority?
+      (self[:revents] & POLLPRI) > 0
     end
   end
 

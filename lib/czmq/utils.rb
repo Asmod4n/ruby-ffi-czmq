@@ -7,22 +7,22 @@ module CZMQ
 
     ffi_lib :libzmq, :czmq
 
-    attach_function :zmq_version,   :zmq_version,     [:buffer_out, :buffer_out, :buffer_out], :void,    blocking: true
-    attach_function :zsys_version,  :zsys_version,    [:buffer_out, :buffer_out, :buffer_out], :void,    blocking: true
-    attach_function :errno,         :zmq_errno,       [],                                   :int
-    attach_function :strerror,      :zmq_strerror,    [:int],                               :string
+    attach_function :zmq_version,   :zmq_version,     [:buffer_out, :buffer_out, :buffer_out],  :void,    blocking: true
+    attach_function :zsys_version,  :zsys_version,    [:buffer_out, :buffer_out, :buffer_out],  :void,    blocking: true
+    attach_function :errno,         :zmq_errno,       [],                                       :int,     blocking: true
+    attach_function :strerror,      :zmq_strerror,    [:int],                                   :string,  blocking: true
 
     module_function
 
     def version
       unless @version
-        z_major = FFI::MemoryPointer.new :pointer
-        z_minor = FFI::MemoryPointer.new :pointer
-        z_patch = FFI::MemoryPointer.new :pointer
+        z_major = FFI::MemoryPointer.new :int
+        z_minor = FFI::MemoryPointer.new :int
+        z_patch = FFI::MemoryPointer.new :int
 
-        c_major = FFI::MemoryPointer.new :pointer
-        c_minor = FFI::MemoryPointer.new :pointer
-        c_patch = FFI::MemoryPointer.new :pointer
+        c_major = FFI::MemoryPointer.new :int
+        c_minor = FFI::MemoryPointer.new :int
+        c_patch = FFI::MemoryPointer.new :int
 
         zmq_version  z_major, z_minor, z_patch
         zsys_version c_major, c_minor, c_patch
@@ -45,11 +45,11 @@ module CZMQ
     end
 
     def bin2hex(bytes)
-      bytes.to_str.unpack(HEXY).first
+      String(bytes).unpack(HEXY).first
     end
 
     def hex2bin(hex)
-      [hex].pack(HEXY)
+      [String(hex)].pack(HEXY)
     end
 
     if version[:czmq][:major] < 3

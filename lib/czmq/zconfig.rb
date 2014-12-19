@@ -11,14 +11,14 @@ module CZMQ
     czmq_function :value,             :value,       [:pointer],                     :string
     czmq_function :put,               :put,         [:pointer, :string, :string],   :void
     czmq_function :set_name,          :set_name,    [:pointer, :string],            :void
-    czmq_function :set_value,         :set_value,   [:pointer, :string],            :void
+    czmq_function :set_value,         :set_value,   [:pointer, :string, :varargs],  :void
     czmq_function :child_zconfig,     :child,       [:pointer],                     :pointer
     czmq_function :next_zconfig,      :next,        [:pointer],                     :pointer
     czmq_function :locate_zconfig,    :locate,      [:pointer, :string],            :pointer
     czmq_function :resolve,           :resolve,     [:pointer, :string, :string],   :string
     czmq_function :zconfig_at_depth,  :at_depth,    [:pointer, :int],               :pointer
     czmq_function :execute_zconfig,   :execute,     [:pointer, :pointer, :pointer], :int
-    czmq_function :set_comment,       :set_comment, [:pointer, :string],            :void
+    czmq_function :set_comment,       :set_comment, [:pointer, :string, :varargs],  :void
     czmq_function :load_zconfig,      :load,        [:string],                      :pointer
     czmq_function :save_zconfig,      :save,        [:pointer, :string],            :int
     czmq_function :filename,          :filename,    [:pointer],                     :string

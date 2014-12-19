@@ -10,7 +10,7 @@ module CZMQ
     czmq_function :send_zstr,  :send,  [:pointer, :string],               :int
     czmq_function :sendm,      :sendm, [:pointer, :string],               :int
     czmq_function :sendx_zstr, :sendx, [:pointer, :string, :varargs],     :int
-    czmq_function :recvx_zsrt, :recvx, [:pointer, :buffer_out, :varargs], :int
+    czmq_function :recvx_zstr, :recvx, [:pointer, :buffer_out, :varargs], :int
     czmq_function :free,       :free,  [:pointer],                        :void
 
     class << self
@@ -47,7 +47,7 @@ module CZMQ
           buffers << FFI::Buffer.new_out(:pointer)
         end
 
-        recvx_zsrt(Zsock.convert(socket), *buffers, :pointer, nil)
+        recvx_zstr(Zsock.convert(socket), *buffers, :pointer, nil)
 
         strings = []
         buffers.select {|buffer| buffer != :buffer_out}.each do |buffer|
