@@ -38,7 +38,9 @@ module Libzmq
     end
   end
 
-  attach_function  :poll, :zmq_poll,  [:pointer, :int, :long], :int,  blocking: true
+  attach_function :poll, :zmq_poll, [:pointer, :int, :long],            :int,     blocking: true
+  attach_function :zmq_z85_decode,  [:buffer_out, :string],             :pointer, blocking: true
+  attach_function :zmq_z85_encode,  [:buffer_out, :buffer_in, :size_t], :string,  blocking: true
 
   class PollItems < Array
     def to_ptr
@@ -49,6 +51,24 @@ module Libzmq
         offset += item.size
       end
       items_pointer
+    end
+  end
+
+  module_function
+
+  def z85_decode(str)
+    if (str.bytesize % 5 == 0)
+      buffer = FFI::MemoryPointer.new(:uint8, (str.bytesize * 0.8))
+      zmq_z85_decode(buffer, str)
+      buffer
+    end
+  end
+
+  def z85_encode(data)
+    size = data.respond_to?(:bytesize) ? data.bytesize : data.size
+    if (size % 4 == 0)
+      buffer = FFI::MemoryPointer.new(:char, (size * 1.25) + 1)
+      zmq_z85_encode(buffer, data, size)
     end
   end
 end

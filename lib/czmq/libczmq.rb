@@ -183,7 +183,9 @@ module LibCZMQ
 
       case #{returns.inspect}
       when :pointer
-        !result.null? ||fail(NoMemoryError, CZMQ::Utils.error, caller)
+        unless #{czmq_class == :zconfig}
+          !result.null? ||fail(NoMemoryError, CZMQ::Utils.error, caller)
+        end
         result
       when :int
         case #{function.inspect}

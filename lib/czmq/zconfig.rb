@@ -20,7 +20,7 @@ module CZMQ
     czmq_function :execute_zconfig,   :execute,     [:pointer, :pointer, :pointer], :int
     czmq_function :set_comment,       :set_comment, [:pointer, :string, :varargs],  :void
     czmq_function :load_zconfig,      :load,        [:string],                      :pointer
-    czmq_function :save_zconfig,      :save,        [:pointer, :string],            :int
+    czmq_function :save,              :save,        [:pointer, :string],            :int
     czmq_function :filename,          :filename,    [:pointer],                     :string
     czmq_function :reload,            :reload,      [:pointer],                     :int
     czmq_function :has_changed,       :has_changed, [:pointer],                     :bool
@@ -34,11 +34,15 @@ module CZMQ
     end
 
     def child
-      self.class.new_from_czmq_obj(child_zconfig, nil)
+      unless (child_config = child_zconfig).null?
+        self.class.new_from_czmq_obj(child_zconfig, nil)
+      end
     end
 
     def next
-      self.class.new_from_czmq_obj(next_zconfig, nil)
+      unless (next_config = next_zconfig).null?
+        self.class.new_from_czmq_obj(next_zconfig, nil)
+      end
     end
 
     def execute(&block)
@@ -53,16 +57,12 @@ module CZMQ
     def locate(path)
       unless (zconfig = locate_zconfig(path)).null?
         self.class.new_from_czmq_obj(zconfig, nil)
-      else
-        fail RuntimeError, Utils.error, caller
       end
     end
 
     def at_depth(level)
       unless (zconfig = zconfig_at_depth(level)).null?
         self.class.new_from_czmq_obj(zconfig, nil)
-      else
-        fail RuntimeError, Utils.error, caller
       end
     end
   end
