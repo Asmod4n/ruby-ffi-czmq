@@ -103,7 +103,7 @@ module LibCZMQ
       end
 
       instance_variables.each do |var|
-        instance_variable_set(var, nil)
+        remove_instance_variable(var)
       end
 
       true
