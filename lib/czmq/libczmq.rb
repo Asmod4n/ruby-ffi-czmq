@@ -173,6 +173,7 @@ module LibCZMQ
           czmq_obj = FFI::MemoryPointer.new(:pointer)
           czmq_obj.write_pointer(@czmq_obj)
           result = self.class.#{name}(czmq_obj)
+          @czmq_obj = czmq_obj.read_pointer if result == 0
         else
           result = self.class.#{name}(@czmq_obj, *args)
         end

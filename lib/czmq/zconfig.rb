@@ -23,6 +23,7 @@ module CZMQ
     czmq_function :save,              :save,        [:pointer, :string],            :int
     czmq_function :filename,          :filename,    [:pointer],                     :string
     czmq_function :has_changed,       :has_changed, [:pointer],                     :bool
+    czmq_function :reload,            :reload,      [:pointer],                     :int
 
     def self.load(filename)
       unless (zconfig = load_zconfig(filename)).null?
