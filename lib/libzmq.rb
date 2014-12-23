@@ -1,4 +1,5 @@
 ﻿require 'ffi'
+require_relative 'czmq/utils'
 
 module Libzmq
   extend FFI::Library
@@ -57,18 +58,13 @@ module Libzmq
   module_function
 
   def z85_decode(str)
-    if (str.bytesize % 5 == 0)
-      buffer = FFI::MemoryPointer.new(:uint8, (str.bytesize * 0.8))
-      zmq_z85_decode(buffer, str)
-      buffer
-    end
+    buffer = CZMQ::Utils.zeros(str.bytesize * 0.8)
+    zmq_z85_decode(buffer, str)
+    buffer
   end
 
   def z85_encode(data)
     size = data.respond_to?(:bytesize) ? data.bytesize : data.size
-    if (size % 4 == 0)
-      buffer = FFI::MemoryPointer.new(:char, (size * 1.25) + 1)
-      zmq_z85_encode(buffer, data, size)
-    end
+    zmq_z85_encode(CZMQ::Utils.zeros(size * 1.25 + 1), data, size)
   end
 end

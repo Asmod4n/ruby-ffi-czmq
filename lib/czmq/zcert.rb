@@ -8,15 +8,20 @@ module CZMQ
     czmq_constructor
     czmq_destructor
 
-    czmq_function :public_txt,  :public_txt,  [:pointer],           :string
-    czmq_function :secret_txt,  :secret_txt,  [:pointer],           :string
-    czmq_function :load_zcert,  :load,        [:string],            :pointer
-    czmq_function :save,        :save,        [:pointer, :string],  :int
-    czmq_function :save_public, :save_public, [:pointer, :string],  :int
-    czmq_function :save_secret, :save_secret, [:pointer, :string],  :int
-    czmq_function :apply,       :apply,       [:pointer, :pointer], :void
-    czmq_function :dup_zcert,   :dup,         [:pointer],           :pointer
-    czmq_function :eq,          :eq,          [:pointer, :pointer], :bool
+    czmq_function :new_from_zcert,  :new_from,    [:buffer_in, :buffer_in],               :pointer
+    czmq_function :public_key,      :public_key,  [:pointer],                             :pointer
+    czmq_function :secret_key,      :secret_key,  [:pointer],                             :pointer
+    czmq_function :public_txt,      :public_txt,  [:pointer],                             :string
+    czmq_function :secret_txt,      :secret_txt,  [:pointer],                             :string
+    czmq_function :set_meta,        :set_meta,    [:pointer, :string, :string, :varargs], :void
+    czmq_function :meta,            :meta,        [:pointer, :string],                    :string
+    czmq_function :load_zcert,      :load,        [:string],                              :pointer
+    czmq_function :save,            :save,        [:pointer, :string],                    :int
+    czmq_function :save_public,     :save_public, [:pointer, :string],                    :int
+    czmq_function :save_secret,     :save_secret, [:pointer, :string],                    :int
+    czmq_function :apply,           :apply,       [:pointer, :pointer],                   :void
+    czmq_function :dup_zcert,       :dup,         [:pointer],                             :pointer
+    czmq_function :eq,              :eq,          [:pointer, :pointer],                   :bool
 
     def self.convert(cert)
       if Utils.check_for_pointer(cert)
@@ -29,6 +34,10 @@ module CZMQ
       else
         fail ArgumentError, "#{cert.class} is not a CZMQ::Zcert", caller
       end
+    end
+
+    def self.new_from(public_key, secret_key)
+      new_from_czmq_obj(new_from_zcert(public_key, secret_key))
     end
 
     def self.load(filename)

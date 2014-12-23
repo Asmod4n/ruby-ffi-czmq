@@ -44,6 +44,12 @@ module CZMQ
       strerror(errno)
     end
 
+    ZERO = "\0".force_encoding(Encoding::ASCII_8BIT).freeze
+
+    def zeros(n)
+      ZERO * n
+    end
+
     def bin2hex(bytes)
       String(bytes).unpack(HEXY).first
     end
