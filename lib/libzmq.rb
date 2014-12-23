@@ -58,13 +58,21 @@ module Libzmq
   module_function
 
   def z85_decode(str)
-    buffer = CZMQ::Utils.zeros(str.bytesize * 0.8)
-    zmq_z85_decode(buffer, str)
-    buffer
+    if (str.bytesize % 5 == 0)
+      buffer = CZMQ::Utils.zeros(str.bytesize * 0.8)
+      zmq_z85_decode(buffer, str)
+      buffer
+    else
+      raise ArgumentError, "str=#{str} bytesize=#{str.bytesize} is not divisible by 5", caller
+    end
   end
 
   def z85_encode(data)
     size = data.respond_to?(:bytesize) ? data.bytesize : data.size
-    zmq_z85_encode(CZMQ::Utils.zeros(size * 1.25 + 1), data, size)
+    if (size % 4 == 0)
+      zmq_z85_encode(CZMQ::Utils.zeros(size * 1.25 + 1), data, size)
+    else
+      raise ArgumentError, "data=#{data} size=#{size} is not divisible by 4", caller
+    end
   end
 end

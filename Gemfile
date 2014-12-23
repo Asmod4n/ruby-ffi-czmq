@@ -1,5 +1,6 @@
 ﻿source 'https://rubygems.org'
 gem 'pry'
+gem 'benchmark-ips'
 platforms :ruby do
   gem 'msgpack'
 end
