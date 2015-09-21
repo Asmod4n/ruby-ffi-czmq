@@ -1,4 +1,4 @@
 ruby-ffi-czmq
 =============
 
-Installation instructions: https://github.com/zeromq/czmq#building-and-installing
+This repo is left as a bad example of how to write a wrapper for czmq, it is not recommended to use it at all.
